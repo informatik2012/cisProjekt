@@ -1,8 +1,10 @@
+#ifndef RANDOM_HPP
+#define RANDOM_HPP
 
-
-class Random
+namespace Random
 {
-  public:
-    static void initRandom(unsigned int seed);
-    static long getRandomLong(long min, long max);
-}
+    void init(unsigned int seed);
+    long getLong(long min, long max);
+};
+
+#endif
