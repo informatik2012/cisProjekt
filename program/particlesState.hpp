@@ -13,7 +13,7 @@ class ParticlesState
   private:
     unsigned long iteration;
     unsigned long N;
-    Particle *particles;
+    GridPoint *particlePositions;
 };
 
 #endif

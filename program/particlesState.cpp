@@ -13,9 +13,9 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
   {
     for(unsigned long i = 0; i < N; ++i)
     {
-      if(leftBottomCorner <= particles[i].position && particles[i].position <= rightTopCorner)
+      if(leftBottomCorner <= particlePositions[i] && particlePositions[i] <= rightTopCorner)
       {
-        neighbourPoints.push_back(particles[i].position);
+        neighbourPoints.push_back(particlePositions[i]);
       }
     }
   }
@@ -35,24 +35,24 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
       {
         if(doubleConditionsLeftBottom[j] 
             && (
-                  (GridPoint::LOWERBOUND <= (particles[i].position)[j]
-                  && (particles[i].position)[j] <= rightTopCorner[j]) 
-              || (leftBottomCorner[j] <= (particles[i].position)[j]
-                  && (particles[i].position)[j] <= GridPoint::UPPERBOUND))
+                  (GridPoint::LOWERBOUND <= particlePositions[i][j]
+                  && particlePositions[i][j] <= rightTopCorner[j]) 
+              || (leftBottomCorner[j] <= particlePositions[i][j]
+                  && particlePositions[i][j] <= GridPoint::UPPERBOUND))
           )
         {
         }
         else if(doubleConditionsRightTop[j]
             && (
-                  (leftBottomCorner[j] <= (particles[i].position)[j]
-                  && (particles[i].position)[j] <= GridPoint::UPPERBOUND) 
-              || (GridPoint::LOWERBOUND <= (particles[i].position)[j]
-                  && (particles[i].position)[j] <= rightTopCorner[j]))
+                  (leftBottomCorner[j] <= particlePositions[i][j]
+                  && particlePositions[i][j] <= GridPoint::UPPERBOUND) 
+              || (GridPoint::LOWERBOUND <= particlePositions[i][j]
+                  && particlePositions[i][j] <= rightTopCorner[j]))
           )
         {
         }
-        else if(leftBottomCorner[j] <= (particles[i].position)[j]
-                  && (particles[i].position)[j] <= rightTopCorner[j])
+        else if(leftBottomCorner[j] <= particlePositions[i][j]
+                  && particlePositions[i][j] <= rightTopCorner[j])
         {
         }
         else
@@ -63,7 +63,7 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
       }
       if(j == 3)
       {
-         neighbourPoints.push_back(particles[i].position);
+         neighbourPoints.push_back(particlePositions[i]);
       }
     }
   }
