@@ -1,13 +1,3 @@
-#include <limits.h>
-#include <math.h>
-#include <vektor>
-#include <stdio.h>
-
-#include "gridPoint.hpp"
-#include "particleState.hpp"
-#include "Settings.hpp"
-
-
 //  [ Lennard-Jones potential: V(r) = V0 * (r/sigma)^-12 - (r/sigma)^-6 ]
 // -------------------------------------------
 //  sigma   -> where potential is 0

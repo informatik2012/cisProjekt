@@ -1,4 +1,12 @@
 #include "Simulation.hpp"
+#include <limits.h>
+#include <math.h>
+#include <vektor>
+#include <stdio.h>
+
+#include "gridPoint.hpp"
+#include "particleState.hpp"
+#include "Settings.hpp"
 
 	    // Calculate the potential energy. 
 		// This is a Lennard-Jones potential: 
@@ -30,12 +38,12 @@
 
 void Simulation::SimulationStep()
 {
-	for (std::vector<partikel>::iterator i = .begin(); i != .end(); ++i)
+	for (std::vector<GridPoint>::iterator i = partikelArray.begin(); i != partikelArray.end(); ++i)
 	 {
-	 	std::vector<position> ParticlesState::getNeightbours(GridPoint position, long r_c)
-	 	for (int i = 0; i < 3; ++i)
+	 	std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint position, long r_c)
+	 	for (int j = 0; j < 3; ++j)
 	 	{
-	 		position[i] = position[i+x];  // neue pos
+	 		position[i] = position[i+x];  // neue pos    addtoComponent
 	 	}
 	 }
 	 return neuesPartikelarray;
