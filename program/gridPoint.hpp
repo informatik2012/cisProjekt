@@ -1,6 +1,8 @@
 #ifndef GRIDPOINT_HPP
 #define GRIDPOINT_HPP
 
+#include <iostream>
+
 class GridPoint
 {
   public:
@@ -38,6 +40,8 @@ GridPoint operator*(long const & a, GridPoint const & b);
 
 GridPoint operator+(GridPoint const & a, GridPoint const & b);
 GridPoint operator-(GridPoint const & a, GridPoint const & b);
+
+std::ostream& operator<<(std::ostream& os, const GridPoint& point);
 
 
 #endif

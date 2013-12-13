@@ -1,3 +1,5 @@
+#include <iostream>
+#include <stdio.h>
 #include <limits.h>
 #include <math.h>
 #include <assert.h>
@@ -62,19 +64,20 @@ long GridPoint::distanceTo(const GridPoint point)
   double result = 0;
   for(unsigned long i = 0; i < 3; ++i)
   {
-    double difference; 
+    unsigned long difference; 
     difference = (positions[i] >= point[i]) ?
                         positions[i] - point[i] 
                       : point[i] - positions[i];
     if(GridPoint::RANGE / 2 + 1 < difference)
     {
       // eventuell +/-1
-      difference = GridPoint::RANGE - difference + 1; 
+      difference =  GridPoint::RANGE - difference; 
     }
 
     result += difference * difference;
   }
-  result = sqrt((double) result);
+
+  result = round(sqrt((double) result));
 
   return (result > (double) UPPERBOUND?UPPERBOUND:(long) result);
 }
@@ -203,4 +206,9 @@ GridPoint operator-(GridPoint const & a, GridPoint const & b)
   {
     result.addToComponent(i, -b[i]);
   }
+}
+std::ostream& operator<<(std::ostream& os, const GridPoint& point)
+{
+  os << "x:" << point[0] << ", y: " << point[1] << ", z: " << point[2] << std::endl;
+  return os;
 }

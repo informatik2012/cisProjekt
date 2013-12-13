@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <WORLD>
-	<OBJECTS>
-	  	<RECTANGLE>
-		  	<TITLE>Quader 1</TITLE>
-		  		<LOCATION>
-		    		<MIDDLEPOINT>
-		        		<X>4</X>
-     		  			<Y>4</Y>
-     		  			<Z>4</Z>
-     				</MIDDLEPOINT>
-     				<POTENTIAL>
-              <V>3</V>
-     				</POTENTIAL>	
-     				<LENGTHS>
-     		 	 		<X>100</X>
-     		  			<Y>100</Y>
-     		  			<Z>100</Z>
-     				</LENGTHS>
-   		   		</LOCATION>
-		 
-		  		<PARTICLES>
-		    		<COUNT>1000</COUNT>
-		    		<MASS>20</MASS>
-		    		<VELOCITY TYPE="middle">2000</VELOCITY>
-		  		</PARTICLES>
+  <OBJECTS>
+    <RECTANGLE>
+      <TITLE>Quader 1</TITLE>
+      <LOCATION>
+        <MIDDLEPOINT>
+          <X>4</X>
+          <Y>4</Y>
+          <Z>4</Z>
+        </MIDDLEPOINT>
+        <LENGTHS>
+          <X>100</X>
+          <Y>100</Y>
+          <Z>100</Z>
+        </LENGTHS>
+      </LOCATION>
+      <POTENTIAL>
+        <V>3</V>
+      </POTENTIAL>	
 
-		 		<PARTICLES>
-		    		<COUNT>1000</COUNT>
-		    		<MASS>100</MASS>
-		    		<VELOCITY TYPE="constant">300</VELOCITY>
-		  		</PARTICLES>
-		</RECTANGLE>
-	</OBJECTS>
+      <PARTICLES>
+        <COUNT>1000</COUNT>
+        <MASS>20</MASS>
+        <VELOCITY TYPE="middle">2000</VELOCITY>
+      </PARTICLES>
+
+      <PARTICLES>
+        <COUNT>1000</COUNT>
+        <MASS>100</MASS>
+        <VELOCITY TYPE="constant">300</VELOCITY>
+      </PARTICLES>
+    </RECTANGLE>
+  </OBJECTS>
 </WORLD>
