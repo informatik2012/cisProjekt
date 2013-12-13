@@ -59,21 +59,24 @@ long & GridPoint::operator [](int i)
 long GridPoint::distanceTo(const GridPoint point)
 {
   //unsigned long differences[3];
-  unsigned long long result = 0;
+  double result = 0;
   for(unsigned long i = 0; i < 3; ++i)
   {
-    unsigned long long difference; 
+    double difference; 
     difference = (positions[i] >= point[i]) ?
                         positions[i] - point[i] 
                       : point[i] - positions[i];
-    if(GridPoint::RANGE / 2 < difference)
+    if(GridPoint::RANGE / 2 + 1 < difference)
     {
-      difference = GridPoint::RANGE - difference; 
+      // eventuell +/-1
+      difference = GridPoint::RANGE - difference + 1; 
     }
 
     result += difference * difference;
   }
-  return (long) sqrt((double) result);
+  result = sqrt((double) result);
+
+  return (result > (double) UPPERBOUND?UPPERBOUND:(long) result);
 }
 void GridPoint::addToComponent(const unsigned long compIndex, const long summand)
 {

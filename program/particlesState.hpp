@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "gridPoint.hpp"
+#include "particle.hpp"
 
 class ParticlesState
 {
@@ -12,7 +13,7 @@ class ParticlesState
   private:
     unsigned long iteration;
     unsigned long N;
-    GridPoint *particlePositions;
+    Particle *particles;
 };
 
 #endif
