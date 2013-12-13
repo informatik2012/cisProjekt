@@ -32,10 +32,13 @@ bool operator<=(GridPoint const & a, GridPoint const & b);
 bool operator>=(GridPoint const & a, GridPoint const & b);
 bool operator<(GridPoint const & a, GridPoint const & b);
 bool operator>(GridPoint const & a, GridPoint const & b);
+bool operator==(GridPoint const & a, GridPoint const & b);
 
 GridPoint operator+(GridPoint const & a, long const & b);
 GridPoint operator-(GridPoint const & a, long const & b);
 GridPoint operator*(GridPoint const & a, long const & b);
+GridPoint operator/(GridPoint const & a, long const & b);
+
 GridPoint operator*(long const & a, GridPoint const & b);
 
 GridPoint operator+(GridPoint const & a, GridPoint const & b);

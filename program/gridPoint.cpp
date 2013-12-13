@@ -111,7 +111,7 @@ void GridPoint::addToComponent(const unsigned long compIndex, const long summand
 
 bool operator<=(GridPoint const & a, GridPoint const & b)
 {
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     if(a[i] > b[i]) return false;
   }
@@ -120,7 +120,7 @@ bool operator<=(GridPoint const & a, GridPoint const & b)
 
 bool operator<(GridPoint const & a, GridPoint const & b)
 {
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     if(a[i] >= b[i]) return false;
   }
@@ -129,7 +129,7 @@ bool operator<(GridPoint const & a, GridPoint const & b)
 
 bool operator>(GridPoint const & a, GridPoint const & b)
 {
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     if(a[i] <= b[i]) return false;
   }
@@ -139,9 +139,18 @@ bool operator>(GridPoint const & a, GridPoint const & b)
 
 bool operator>=(GridPoint const & a, GridPoint const & b)
 {
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     if(a[i] < b[i]) return false;
+  }
+  return true;
+}
+
+bool operator==(GridPoint const & a, GridPoint const & b)
+{
+  for(int i = 0; i < 3; ++i)
+  {
+    if(a[i] != b[i]) return false;
   }
   return true;
 }
@@ -150,7 +159,7 @@ GridPoint operator+(GridPoint const & a, long const & b)
 {
   GridPoint result = a;
   long maxMb = GridPoint::UPPERBOUND - b;
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     result.addToComponent(i, b);
   }
@@ -161,9 +170,20 @@ GridPoint operator-(GridPoint const & a, long const & b)
 {
   GridPoint result = a;
   long minPb = GridPoint::LOWERBOUND + b;
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     result.addToComponent(i, -b);
+  }
+  return result;
+}
+
+GridPoint operator/(GridPoint const & a, long const & b)
+{
+  GridPoint result = a;
+  assert(b != 0);
+  for(int i = 0; i < 3; ++i)
+  {
+    result[i] /= b;
   }
   return result;
 }
@@ -176,7 +196,7 @@ GridPoint operator*(GridPoint const & a, long const & b)
     return GridPoint(0,0,0);
   }
   assert(GridPoint::UPPERBOUND >= fabs(b));
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     result[i] *= b;
     assert((b > 0 && result[i] >= a[i]) || (b < 0 &&  result[i] <= a[i]));
@@ -192,20 +212,22 @@ GridPoint operator*(long const & a, GridPoint const & b)
 GridPoint operator+(GridPoint const & a, GridPoint const & b)
 {
   GridPoint result = a;
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     result.addToComponent(i, b[i]);
   }
+  return result;
 }
 
 
 GridPoint operator-(GridPoint const & a, GridPoint const & b)
 {
   GridPoint result = a;
-  for(int i = 1; i < 3; ++i)
+  for(int i = 0; i < 3; ++i)
   {
     result.addToComponent(i, -b[i]);
   }
+  return result;
 }
 std::ostream& operator<<(std::ostream& os, const GridPoint& point)
 {

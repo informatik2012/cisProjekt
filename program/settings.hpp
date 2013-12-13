@@ -7,6 +7,7 @@ class Settings
 {
   public:
     static double strToDouble( const std::string& s );
+    static long strToLong( const std::string& s );
     static Settings getSettingsFromFile(std::string filePath);
 };
 

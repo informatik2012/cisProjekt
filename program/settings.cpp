@@ -24,6 +24,15 @@ double Settings::strToDouble( const std::string& s )
 } 
 
 
+long Settings::strToLong( const std::string& s )
+{
+  std::istringstream i(s);
+  long x;
+  if (!(i >> x))
+    return 0;
+  return x;
+} 
+
 Settings Settings::getSettingsFromFile(std::string filePath)
 {
   cout << "Parsing firstworld.xml..." << endl;
@@ -41,10 +50,10 @@ Settings Settings::getSettingsFromFile(std::string filePath)
   doc.parse<0>(&buffer[0]);
   // Find our root node
   root_node = doc.first_node("WORLD");
-  // Iterate over the brewerys
+  // Iterate over the objects
   for (xml_node<> * object_node = root_node->first_node("OBJECTS"); object_node; object_node = object_node->next_sibling())
   {
-    // Interate over the beers
+    // Interate over the rectangles 
     for(xml_node<> * rectangle_node = object_node->first_node("RECTANGLE"); rectangle_node; rectangle_node = rectangle_node->next_sibling())
     {
       
@@ -57,20 +66,48 @@ Settings Settings::getSettingsFromFile(std::string filePath)
       string xStr = middlepoint_node->first_node("X")->value();
       string yStr = middlepoint_node->first_node("Y")->value();
       string zStr = middlepoint_node->first_node("Z")->value();
-      GridPoint middle(strToDouble(xStr), strToDouble(yStr), strToDouble(zStr));
-
+      GridPoint middle(strToLong(xStr), strToLong(yStr), strToLong(zStr));
 
       xStr = lengths_node->first_node("X")->value();
       yStr = lengths_node->first_node("Y")->value();
       zStr = lengths_node->first_node("Z")->value();
-      GridPoint halfLength(strToDouble(xStr), strToDouble(yStr), strToDouble(zStr));
-      cout << halfLength;
-      GridPoint bottomLeft = middle - 0.5 * halfLength;
-      cout << bottomLeft;
+      GridPoint lengthes(strToLong(xStr), strToLong(yStr), strToLong(zStr));
 
-      GridPoint topRight = middle + 0.5 * halfLength;
-      cout << topRight;
+      xml_node<> * particles_node = rectangle_node->first_node("PARTICLES");
+      
+      GridPoint bottomLeft = middle - (lengthes / 2);
 
+      GridPoint topRight = middle + (lengthes / 2);
+
+      assert(bottomLeft < topRight);
+
+      if(particles_node)
+      {
+        long count = strToLong(particles_node->first_node("COUNT")->value());
+
+        GridPoint * particles = new GridPoint[count];
+        for(long i = 0; i < count; ++i)
+        {
+          bool alreadyInserted;
+          do
+          {
+            alreadyInserted = false;
+            particles[i] = GridPoint(bottomLeft, topRight);
+            for(long j; j < i; ++j)
+            {
+              if(particles[j] == particles[i])
+              {
+                alreadyInserted = true;
+                break;
+              }
+            }
+          } while(alreadyInserted); 
+
+          //cout << particles[i];
+        }
+        delete[] particles;
+      }
+      
       printf("Middlepoint coordinates: %s, %s, %s. ",
           middlepoint_node->first_node("X")->value(),
           middlepoint_node->first_node("Y")->value(),

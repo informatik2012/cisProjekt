@@ -20,6 +20,11 @@ int main( int argc, const char* argv[] )
   GridPoint p1(0,0,0);
   GridPoint p2(1,2,3);
   GridPoint p3(p1,p2);
+  ParticlesState myState(1000);
+  for(unsigned long i = 0; i < myState.N; ++i)
+  {
+    cout << "y: " << myState[i][1] << endl;
+  }
   if(doTests)
   {
     doChecks();

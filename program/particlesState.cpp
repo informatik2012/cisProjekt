@@ -1,6 +1,16 @@
 #include "particlesState.hpp"
 GridPoint ONEPOINT(1,1,1);
 
+ParticlesState::ParticlesState(unsigned long N):N(N)
+{
+  particlePositions = new GridPoint[N];
+}
+ParticlesState::~ParticlesState()
+{
+  delete[] particlePositions;
+}
+
+
 std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long radius)
 {
   std::vector<GridPoint> neighbourPoints;
@@ -78,5 +88,11 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
       ++it;
     }
   }
+}
+
+
+GridPoint & ParticlesState::operator [](unsigned long i)
+{
+  return particlePositions[i];
 }
 

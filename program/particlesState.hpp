@@ -8,11 +8,13 @@
 class ParticlesState
 {
   public:
-    ParticlesState(int OBJECT);
+    ParticlesState(unsigned long N);
+    ~ParticlesState();
     std::vector<GridPoint> getNeightbours(GridPoint origin, long radius);
+    GridPoint & operator [](unsigned long i);
+    const unsigned long N;
   private:
     unsigned long iteration;
-    unsigned long N;
     GridPoint *particlePositions;
 };
 
