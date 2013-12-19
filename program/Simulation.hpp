@@ -24,7 +24,7 @@ public:
 	static double potential(double r);
 	static double potentialD_1r2(double r2);
 	static double potential_w(double r);
-	void Calculate(Gridpoint point, position);
+	
 	void SimulationStep();
 	~Simulation();
 	

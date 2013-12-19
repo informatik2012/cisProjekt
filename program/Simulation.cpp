@@ -9,6 +9,11 @@
 #include "particleState.hpp"
 #include "Settings.hpp"
 
+template<typename T>inline T SQR(T x)
+	{  return(x*x);  }
+template<typename T>inline T POW3(T x)
+	{  return(x*x*x);  }
+
 	    // Calculate the potential energy. 
 		// This is a Lennard-Jones potential: 
 		// Argument: 1/r^2. 
@@ -24,7 +29,7 @@
 		
 		// Calc 1/|r| * \partial V(|r|) / \partial |r|: 
 		// Argument: 1/r^2. 
-		static double Simulation::potentialD_1r2(double r2)
+		static double Simulation::potentialD_1r2(double r2)   // verkehrt rum?
 		{
 			double r6=r2*r2*r2;
 			return(48.0*r6*r2*(0.5-r6));
@@ -33,9 +38,11 @@
 		// Calc r+dv/dr = -24*(2*r^-12-r^-6). Argument r. 
 		static double Simulation::potential_w(double r)
 		{
-			double r6=1.0/POW3(SQR(r));  // r^-6   problem problem?! pow3 und sqr?
+			double r6=1.0/POW3(SQR(r));  // r^-6   problem problem?!
 			return(24*r6*(1-2*r6));
 		}
+
+
 
 void Simulation::SimulationStep()
 {
