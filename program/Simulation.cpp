@@ -1,3 +1,4 @@
+
 #include "Simulation.hpp"
 #include <limits.h>
 #include <math.h>
@@ -38,13 +39,19 @@
 
 void Simulation::SimulationStep()
 {
+	particleArray = new GridPoint[N];
+
 	for (std::vector<GridPoint>::iterator i = partikelArray.begin(); i != partikelArray.end(); ++i)
 	 {
-	 	std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint position, long r_c)
-	 	for (int j = 0; j < 3; ++j)
-	 	{
-	 		position[i] = position[i+x];  // neue pos    addtoComponent
-	 	}
+	 	std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint neighbourPoints, long r_c) 
+	 	
+	 	position[i] = Calculate(position[i], neighbourPoints);  // 
+	 	
 	 }
-	 return neuesPartikelarray;
+	 return particleArray;
+
+Simulation::~Simulation()
+	{
+		delete particleArray;
+	}	 
 };

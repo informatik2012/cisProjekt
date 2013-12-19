@@ -1,3 +1,6 @@
+#ifndef SIMULATION_HPP
+#define SIMULATION_HPP
+
 //  [ Lennard-Jones potential: V(r) = V0 * (r/sigma)^-12 - (r/sigma)^-6 ]
 // -------------------------------------------
 //  sigma   -> where potential is 0
@@ -17,12 +20,14 @@ class Simulation
 {
 public:
 	Simulation(partikelArray);
-	~Simulation();
-	void SimulationStep();
 	static double potential_1r2(double r2);
 	static double potential(double r);
 	static double potentialD_1r2(double r2);
 	static double potential_w(double r);
+	void Calculate(Gridpoint point, position);
+	void SimulationStep();
+	~Simulation();
+	
 
 
 private:
