@@ -9,6 +9,8 @@ class GridPoint
     GridPoint();
     GridPoint(long x,long y, long z);
     GridPoint(GridPoint posStart, GridPoint posEnd);
+    GridPoint(GridPoint oldPosition, unsigned long velocity);
+
     long getX();
     long getY();
     long getZ();

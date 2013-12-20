@@ -33,6 +33,24 @@ GridPoint::GridPoint(GridPoint posStart, GridPoint posEnd)
   }
 }
 
+GridPoint::GridPoint(GridPoint oldPosition, unsigned long velocity)
+{
+  double phi   = Random::getRandomPhi();
+  double theta = Random::getRandomTheta();
+  double const velocityD = (double) velocity;
+  double const sinTheta = sin(theta);
+  GridPoint velocityVec(
+      round((long) velocityD * sinTheta * cos(phi)),
+      round((long) velocityD * sinTheta * sin(phi)),
+      round((long) velocityD * cos(theta))
+        );
+  oldPosition =  oldPosition + velocityVec;
+ 
+  positions[0] = oldPosition[0];
+  positions[1] = oldPosition[1];
+  positions[2] = oldPosition[2];
+}
+
 long GridPoint::getX()
 {
   return positions[0];

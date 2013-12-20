@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <WORLD>
+  <SIMULATION>
+    <STEPS>100</STEPS>
+  </SIMULATION>
   <OBJECTS>
     <RECTANGLE>
       <TITLE>Quader 1</TITLE>
@@ -22,13 +25,13 @@
       <PARTICLES>
         <COUNT>1000</COUNT>
         <MASS>20</MASS>
-        <VELOCITY TYPE="middle">2000</VELOCITY>
+        <VELOCITY TYPE="constant">2000</VELOCITY>
       </PARTICLES>
 
       <PARTICLES>
         <COUNT>1000</COUNT>
         <MASS>100</MASS>
-        <VELOCITY TYPE="constant">300</VELOCITY>
+        <VELOCITY TYPE="middle">300</VELOCITY>
       </PARTICLES>
     </RECTANGLE>
   </OBJECTS>

@@ -1,16 +1,66 @@
 #include "particlesState.hpp"
 GridPoint ONEPOINT(1,1,1);
 
-ParticlesState::ParticlesState(unsigned long N):N(N)
+ParticlesState::ParticlesState(unsigned long N, unsigned long iteration):N(N),iteration(iteration)
 {
   particlePositions = new GridPoint[N];
 }
+ParticlesState::ParticlesState(unsigned long N, GridPoint bottomLeft, GridPoint topRight, unsigned long iteration):N(N),iteration(iteration)
+{
+  particlePositions = new GridPoint[N];
+
+  for(long i = 0; i < N; ++i)
+  {
+    bool alreadyInserted;
+    do
+    {
+      alreadyInserted = false;
+      particlePositions[i] = GridPoint(bottomLeft, topRight);
+      for(long j; j < i; ++j)
+      {
+        if(particlePositions[j] == particlePositions[i])
+        {
+          alreadyInserted = true;
+          break;
+        }
+      }
+    } while(alreadyInserted);
+  }
+}
+ParticlesState::ParticlesState(ParticlesState *first, unsigned long constVelocity)
+  :N(first->N),iteration(first->nextIt())
+{
+  particlePositions = new GridPoint[N];
+  for(long i = 0; i < N; ++i)
+  {
+    bool alreadyInserted;
+    do
+    {
+      alreadyInserted = false;
+      particlePositions[i] = GridPoint(particlePositions[i], constVelocity);
+      for(long j; j < i; ++j)
+      {
+        if(particlePositions[j] == particlePositions[i])
+        {
+          alreadyInserted = true;
+          break;
+        }
+      }
+    } while(alreadyInserted);
+  }
+}
 ParticlesState::~ParticlesState()
 {
-  delete[] particlePositions;
+  if(particlePositions != NULL)
+  {
+    delete[] particlePositions;
+  }
 }
 
-
+unsigned long ParticlesState::nextIt()
+{
+  return (iteration + 1);
+}
 std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long radius)
 {
   std::vector<GridPoint> neighbourPoints;

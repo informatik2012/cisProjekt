@@ -9,10 +9,18 @@
 #include "gridPoint.hpp"
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_utils.hpp"
-
+#include "particlesState.hpp"
 
 using namespace rapidxml;
 using namespace std;
+
+Settings::~Settings()
+{
+  if(simulation != NULL)
+  {
+    //delete simulation;
+  }
+}
 
 double Settings::strToDouble( const std::string& s )
 {
@@ -33,8 +41,9 @@ long Settings::strToLong( const std::string& s )
   return x;
 } 
 
-Settings Settings::getSettingsFromFile(std::string filePath)
+Settings *Settings::getSettingsFromFile(std::string filePath)
 {
+  Settings *settings = new Settings();
   cout << "Parsing firstworld.xml..." << endl;
   
   xml_document<> doc;
@@ -50,6 +59,10 @@ Settings Settings::getSettingsFromFile(std::string filePath)
   doc.parse<0>(&buffer[0]);
   // Find our root node
   root_node = doc.first_node("WORLD");
+
+  xml_node<> * simulation_node = root_node->first_node("SIMULATION");
+  xml_node<> * steps_node = simulation_node->first_node("STEPS");
+  long steps = strToLong(steps_node->value());
   // Iterate over the objects
   for (xml_node<> * object_node = root_node->first_node("OBJECTS"); object_node; object_node = object_node->next_sibling())
   {
@@ -57,7 +70,7 @@ Settings Settings::getSettingsFromFile(std::string filePath)
     for(xml_node<> * rectangle_node = object_node->first_node("RECTANGLE"); rectangle_node; rectangle_node = rectangle_node->next_sibling())
     {
       
-      printf("Rectangle title: %s. ",
+      printf("Rectangle title: %s. \n ",
           (rectangle_node->first_node("TITLE"))->value());
       xml_node<> * location_node = rectangle_node->first_node("LOCATION");
       xml_node<> * middlepoint_node = location_node->first_node("MIDDLEPOINT");
@@ -84,7 +97,9 @@ Settings Settings::getSettingsFromFile(std::string filePath)
       if(particles_node)
       {
         long count = strToLong(particles_node->first_node("COUNT")->value());
-
+        ParticlesState *first = new ParticlesState(count, bottomLeft, topRight); 
+        ParticlesState *second;
+        /*
         GridPoint * particles = new GridPoint[count];
         for(long i = 0; i < count; ++i)
         {
@@ -101,11 +116,31 @@ Settings Settings::getSettingsFromFile(std::string filePath)
                 break;
               }
             }
-          } while(alreadyInserted); 
-
+          } while(alreadyInserted);
+          
           //cout << particles[i];
         }
-        delete[] particles;
+        */
+        xml_node<> * velocity_node = particles_node->first_node("VELOCITY");
+        long velocity = strToLong(velocity_node->value());
+
+        for (xml_attribute<> *attr = velocity_node->first_attribute();
+            attr; attr = attr->next_attribute())
+        {
+          if(strcmp(attr->name(),"TYPE") == 0)
+          {
+            if(strcmp(attr->value(),"constant") == 0)
+            {
+              second = new ParticlesState(first, velocity);
+            }
+            break;
+          }
+        }
+        if(second != NULL)
+        {
+          settings->simulation = new Simulation(first, second, steps);
+        }
+        //delete first;
       }
       
       printf("Middlepoint coordinates: %s, %s, %s. ",
@@ -122,5 +157,5 @@ Settings Settings::getSettingsFromFile(std::string filePath)
     }
     cout << endl;
   }
-
+  return settings;
 }
