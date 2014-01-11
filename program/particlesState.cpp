@@ -1,6 +1,10 @@
 #include "particlesState.hpp"
 GridPoint ONEPOINT(1,1,1);
 
+const double ParticlesState::lennardJonesA = 12.0;
+const double ParticlesState::lennardJonesB = 12.0;
+
+
 ParticlesState::ParticlesState(unsigned long N, unsigned long iteration):N(N),iteration(iteration)
 {
   particlePositions = new GridPoint[N];
@@ -138,6 +142,37 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
       ++it;
     }
   }
+}
+
+GridPoint ParticlesState::getForceOfParticles(unsigned long i, unsigned long j)
+{
+  const long distance = particlePositions[i].distanceTo(particlePositions[j]);
+  const long distance2 = distance * distance;
+  const long distance4 = distance2 * distance2;
+  const long distance6 = distance4 * distance2;
+  const long distance8 = distance4 * distance2;
+  const long distance14 = distance6 * distance8;
+  const double coeff = lennardJonesA/distance14 - lennardJonesB/distance8;
+  const GridPoint distVector = (particlePositions[j] - particlePositions[i]);
+  GridPoint force = GridPoint();
+  for(int k = 0; k < 3; ++k)
+  {
+    force[k] = (long) (coeff * distVector[i]);
+  }
+  return force;
+}
+
+GridPoint ParticlesState::getAcceleration(unsigned long particle)
+{
+  GridPoint acceleration = GridPoint();
+  for(unsigned long i = 0; i < N; ++i)
+  {
+    if(i != particle)
+    {
+      acceleration = acceleration + getForceOfParticles(particle, i);
+    }
+  }
+  return GridPoint(0,0,0);
 }
 
 

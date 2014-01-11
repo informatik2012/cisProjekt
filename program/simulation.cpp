@@ -14,7 +14,7 @@ template<typename T>inline T SQR(T x)
 template<typename T>inline T POW3(T x)
 	{  return(x*x*x);  }
 */
-Simulation::Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount)
+Simulation::Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount):stepCount(stepCount)
 {
   particlesStates =  static_cast<ParticlesState*> (::operator new (sizeof(ParticlesState[stepCount + 2])));
   particlesStates[0] = *firstState;
@@ -51,7 +51,6 @@ Simulation::Simulation(ParticlesState *firstState, ParticlesState *secondState, 
 		}
 */
 
-
 ParticlesState* Simulation::SimulationStep()
 {
   particlesStates[currentState + 1] = ParticlesState(particlesStates[currentState].N, currentState+1);
@@ -63,7 +62,7 @@ ParticlesState* Simulation::SimulationStep()
   const unsigned long cP1 = currentState + 1;
   for(unsigned long i = 0; i < N; ++i)
   {
-    particlesStates[cP1][i] = particlesStates[c][i] + particlesStates[cM1][i]; 
+    particlesStates[cP1][i] = 2*particlesStates[c][i] - particlesStates[cM1][i] + particlesStates[c].getAcceleration(i);
   }
   ++currentState;
   return &(particlesStates[currentState + 1]);
@@ -80,6 +79,15 @@ ParticlesState* Simulation::SimulationStep()
   return particleArray;
 */
 }
+
+void Simulation::runSimulation()
+{
+  for(unsigned long i; i < stepCount; ++i)
+  {
+    SimulationStep();
+  }
+}
+
 Simulation::~Simulation()
 {
   delete particlesStates;

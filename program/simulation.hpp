@@ -28,6 +28,7 @@ public:
 	static double potential_w(double r);
 
   ParticlesState* SimulationStep();
+  void runSimulation();
 
 	~Simulation();
   	
@@ -40,5 +41,6 @@ private:
 	long r_m;    // range where potential is minimum
 	double epsilon, sigma;
   unsigned long currentState;
+  unsigned long stepCount;
 };
 #endif

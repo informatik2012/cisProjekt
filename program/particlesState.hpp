@@ -15,8 +15,14 @@ class ParticlesState
     unsigned long nextIt();
 
     std::vector<GridPoint> getNeightbours(GridPoint origin, long radius);
+ 
+    GridPoint getForceOfParticles(unsigned long i, unsigned long j);
+    GridPoint getAcceleration(unsigned long particle);
+
     GridPoint & operator [](unsigned long i);
     unsigned long N;
+    static const double lennardJonesA;
+    static const double lennardJonesB;
   private:
     unsigned long iteration;
     GridPoint *particlePositions;
