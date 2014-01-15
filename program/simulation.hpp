@@ -22,10 +22,6 @@ class Simulation
 {
 public:
   Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount);
-	static double potential_1r2(double r2);
-	static double potential(double r);
-	static double potentialD_1r2(double r2);
-	static double potential_w(double r);
 
   ParticlesState* SimulationStep();
   void runSimulation();
@@ -36,10 +32,6 @@ public:
 
 private:
   ParticlesState *particlesStates;
-	long x;
-	long r_c;    // cut-off distance
-	long r_m;    // range where potential is minimum
-	double epsilon, sigma;
   unsigned long currentState;
   unsigned long stepCount;
 };
