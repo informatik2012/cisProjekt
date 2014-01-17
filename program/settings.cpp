@@ -63,11 +63,34 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
   xml_node<> * simulation_node = root_node->first_node("SIMULATION");
   xml_node<> * steps_node = simulation_node->first_node("STEPS");
   long steps = strToLong(steps_node->value());
+  xml_node<> * lennardJonesA_node = simulation_node->first_node("LENNARDJONESA");
+  double lennardJonesA = -1.0;
+  if(lennardJonesA_node != NULL)
+  {
+    lennardJonesA = strToDouble(lennardJonesA_node->value());
+  }
+  xml_node<> * lennardJonesB_node = simulation_node->first_node("LENNARDJONESB");
+  double lennardJonesB = -1.0;
+  if(lennardJonesB_node != NULL)
+  {
+    lennardJonesB = strToDouble(lennardJonesB_node->value());
+  }
+
+  xml_node<> * outputDir_node = simulation_node->first_node("OUTPUTDIR");
+  std::string outputDir;
+  if(outputDir_node != NULL)
+  {
+    outputDir = outputDir_node->value();
+  }
+  else
+  {
+    outputDir = "";
+  }
   // Iterate over the objects
-  for (xml_node<> * object_node = root_node->first_node("OBJECTS"); object_node; object_node = object_node->next_sibling())
+  for (xml_node<> * object_node = root_node->first_node("OBJECTS"); object_node != 0; object_node = object_node->next_sibling())
   {
     // Interate over the rectangles 
-    for(xml_node<> * rectangle_node = object_node->first_node("RECTANGLE"); rectangle_node; rectangle_node = rectangle_node->next_sibling())
+    for(xml_node<> * rectangle_node = object_node->first_node("RECTANGLE"); rectangle_node != 0; rectangle_node = rectangle_node->next_sibling())
     {
       
       printf("Rectangle title: %s. \n ",
@@ -94,7 +117,7 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
 
       assert(bottomLeft < topRight);
 
-      if(particles_node)
+      if(particles_node != NULL)
       {
         long count = strToLong(particles_node->first_node("COUNT")->value());
         ParticlesState *first = new ParticlesState(count, bottomLeft, topRight); 
@@ -138,7 +161,14 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
         }
         if(second != NULL)
         {
-          settings->simulation = new Simulation(first, second, steps);
+          if(lennardJonesA >= 0.0 && lennardJonesB >= 0.0)
+          {
+            settings->simulation = new Simulation(first, second, steps, outputDir, lennardJonesA, lennardJonesB);
+          }
+          else
+          {
+            settings->simulation = new Simulation(first, second, steps, outputDir);
+          }
         }
         //delete first;
       }
@@ -155,7 +185,80 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
           lengths_node->first_node("Z")->value());
 
     }
-    cout << endl;
+    ParticlesState *first;
+    ParticlesState *second;
+    for (xml_node<> * particles_node = object_node->first_node("PARTICLES"); particles_node != 0; particles_node = particles_node->next_sibling())
+    {
+      std::cout << "Komisch";
+      unsigned long pointsCount = 0;
+      for (xml_node<> * positions_node = particles_node->first_node("POSITIONS"); positions_node != 0; positions_node = positions_node->next_sibling(positions_node->name()))
+      {
+
+        xml_node<> *x_node;
+        xml_node<> *y_node;
+        xml_node<> *z_node;
+        for (x_node = positions_node->first_node("X"),
+y_node = positions_node->first_node("Y"),
+z_node = positions_node->first_node("Z");
+             x_node != 0 && y_node != 0 && z_node != 0;
+             x_node = x_node->next_sibling(x_node->name()),
+             y_node = y_node->next_sibling(y_node->name()),
+             z_node = z_node->next_sibling(z_node->name())
+             )
+        {
+          ++pointsCount;
+        }
+
+        first = new ParticlesState(pointsCount, 0);
+        unsigned long i = 0;
+        for (x_node = positions_node->first_node("X"),
+y_node = positions_node->first_node("Y"),
+z_node = positions_node->first_node("Z");
+             x_node != 0 && y_node != 0 && z_node != 0;
+             x_node = x_node->next_sibling(x_node->name()),
+             y_node = y_node->next_sibling(y_node->name()),
+             z_node = z_node->next_sibling(z_node->name())
+             )
+        {
+          string xStr = x_node->value();
+          string yStr = y_node->value();
+          string zStr = z_node->value();
+          
+          (*first)[i] = GridPoint(strToLong(xStr), strToLong(yStr), strToLong(zStr));
+          std::cout << "Point Def";
+          ++i;
+        }
+        xml_node<> * velocity_node = particles_node->first_node("VELOCITY");
+        long velocity = strToLong(velocity_node->value());
+
+        for (xml_attribute<> *attr = velocity_node->first_attribute();
+            attr; attr = attr->next_attribute())
+        {
+          if(strcmp(attr->name(),"TYPE") == 0)
+          {
+            if(strcmp(attr->value(),"constant") == 0)
+            {
+              second = new ParticlesState(first, velocity);
+            }
+            break;
+          }
+        }
+
+      }
+
+    }
+    //cout << endl;
+    if(second != NULL)
+    {
+      if(lennardJonesA >= 0.0 && lennardJonesB >= 0.0)
+      {
+        settings->simulation = new Simulation(first, second, steps, outputDir, lennardJonesA, lennardJonesB);
+      }
+      else
+      {
+        settings->simulation = new Simulation(first, second, steps, outputDir);
+      }
+    }
   }
   return settings;
 }

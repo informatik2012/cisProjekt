@@ -5,15 +5,23 @@
 #include <vector>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "gridPoint.hpp"
 #include "particlesState.hpp"
 #include "settings.hpp"
 
-Simulation::Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount):stepCount(stepCount)
+Simulation::Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount, std::string outputDir, double lennardJonesA, double lennardJonesB):stepCount(stepCount), outputDir(outputDir), lennardJonesA(lennardJonesA), lennardJonesB(lennardJonesB)
 {
+  if(access(outputDir.c_str(), 0) != 0)
+  {
+    mkdir(outputDir.c_str(), 0777);
+  }
   particlesStates =  static_cast<ParticlesState*> (::operator new (sizeof(ParticlesState[stepCount + 2])));
   particlesStates[0] = *firstState;
+  particlesStates[0].writeToFile(outputDir, 0);
   particlesStates[1] = *secondState;
+  particlesStates[1].writeToFile(outputDir, 1);
   currentState = 1;
 }
 
@@ -28,10 +36,16 @@ ParticlesState* Simulation::SimulationStep()
   const unsigned long cP1 = currentState + 1;
   for(unsigned long i = 0; i < N; ++i)
   {
-    particlesStates[cP1][i] = 2*particlesStates[c][i] - particlesStates[cM1][i] + particlesStates[c].getAcceleration(i);
+    particlesStates[cP1][i] = particlesStates[c][i] + particlesStates[c][i] - particlesStates[cM1][i] + particlesStates[c].getAcceleration(i, lennardJonesA, lennardJonesB);
+    //std::cout << particlesStates[cP1][i];
   }
+
+  particlesStates[cP1].writeToFile(outputDir, cP1);
+
   ++currentState;
-  return &(particlesStates[currentState + 1]);
+
+
+  return &(particlesStates[cP1]);
   /*
   particleArray = new GridPoint[N];
 
@@ -48,7 +62,7 @@ ParticlesState* Simulation::SimulationStep()
 
 void Simulation::runSimulation()
 {
-  for(unsigned long i; i < stepCount; ++i)
+  for(unsigned long i = 0; i < stepCount; ++i)
   {
     SimulationStep();
   }

@@ -1,8 +1,10 @@
 #include "particlesState.hpp"
+#include <fstream>
+#include <sstream>
 GridPoint ONEPOINT(1,1,1);
 
-const double ParticlesState::lennardJonesA = 12.0;
-const double ParticlesState::lennardJonesB = 12.0;
+//const double ParticlesState::lennardJonesA = 12.0;
+//const double ParticlesState::lennardJonesB = 12.0;
 
 
 ParticlesState::ParticlesState(unsigned long N, unsigned long iteration):N(N),iteration(iteration)
@@ -57,7 +59,7 @@ ParticlesState::~ParticlesState()
 {
   if(particlePositions != NULL)
   {
-    delete[] particlePositions;
+    //delete[] particlePositions;
   }
 }
 
@@ -144,7 +146,7 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
   }
 }
 
-GridPoint ParticlesState::getForceOfParticles(unsigned long i, unsigned long j)
+GridPoint ParticlesState::getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB)
 {
   const long distance = particlePositions[i].distanceTo(particlePositions[j]);
   const long distance2 = distance * distance;
@@ -162,19 +164,38 @@ GridPoint ParticlesState::getForceOfParticles(unsigned long i, unsigned long j)
   return force;
 }
 
-GridPoint ParticlesState::getAcceleration(unsigned long particle)
+GridPoint ParticlesState::getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB)
 {
   GridPoint acceleration = GridPoint();
   for(unsigned long i = 0; i < N; ++i)
   {
     if(i != particle)
     {
-      acceleration = acceleration + getForceOfParticles(particle, i);
+      acceleration = acceleration + getForceOfParticles(particle, i, lennardJonesA, lennardJonesB);
     }
   }
   return GridPoint(0,0,0);
 }
 
+void ParticlesState::writeToFile(std::string outputDir, unsigned long i)
+{
+  std::stringstream filePathStream;
+  std::cout << "String out";
+  filePathStream << outputDir << i << ".dat";
+  std::fstream f;
+  f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+  f << "#x\ty\tz" << std::endl;
+  for(unsigned long i = 0; i < N; ++i)
+  {
+    f << particlePositions[i].getX() << "\t" << particlePositions[i].getY();
+    f << "\t" << particlePositions[i].getZ(); //<< "\t";
+
+    //f << "\t" << points[i].energy << "\t";
+    //f << points[i].mass;
+    f << std::endl;
+  }
+  f.close();
+}
 
 GridPoint & ParticlesState::operator [](unsigned long i)
 {

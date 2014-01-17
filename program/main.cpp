@@ -30,7 +30,8 @@ int main( int argc, const char* argv[] )
   {
     doChecks();
   }
-  Settings *settings = Settings::getSettingsFromFile("firstWorld.xml");
+  Settings *settings = Settings::getSettingsFromFile(argv[1]);
+  settings->simulation->runSimulation();
   //delete settings;
 }
 

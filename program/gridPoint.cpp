@@ -217,7 +217,7 @@ GridPoint operator*(GridPoint const & a, long const & b)
   for(int i = 0; i < 3; ++i)
   {
     result[i] *= b;
-    assert((b > 0 && result[i] >= a[i]) || (b < 0 &&  result[i] <= a[i]));
+    //assert((b > 0 && result[i] >= a[i]) || (b < 0 &&  result[i] <= a[i]));
   }
   return result;
 }
