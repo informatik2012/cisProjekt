@@ -60,13 +60,21 @@ ParticlesState* Simulation::SimulationStep()
 */
 }
 
+
+void Simulation::writeEnergiesToFile()
+{
+  
+}
+
 void Simulation::runSimulation()
 {
   for(unsigned long i = 0; i < stepCount; ++i)
   {
     SimulationStep();
   }
+  writeEnergiesToFile();
 }
+
 
 Simulation::~Simulation()
 {

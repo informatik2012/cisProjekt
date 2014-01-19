@@ -121,7 +121,7 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
       {
         long count = strToLong(particles_node->first_node("COUNT")->value());
         ParticlesState *first = new ParticlesState(count, bottomLeft, topRight); 
-        ParticlesState *second;
+        ParticlesState *second = NULL;
         /*
         GridPoint * particles = new GridPoint[count];
         for(long i = 0; i < count; ++i)
@@ -185,11 +185,10 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
           lengths_node->first_node("Z")->value());
 
     }
-    ParticlesState *first;
-    ParticlesState *second;
+    ParticlesState *first = NULL;
+    ParticlesState *second = NULL;
     for (xml_node<> * particles_node = object_node->first_node("PARTICLES"); particles_node != 0; particles_node = particles_node->next_sibling())
     {
-      std::cout << "Komisch";
       unsigned long pointsCount = 0;
       for (xml_node<> * positions_node = particles_node->first_node("POSITIONS"); positions_node != 0; positions_node = positions_node->next_sibling(positions_node->name()))
       {
@@ -225,7 +224,6 @@ z_node = positions_node->first_node("Z");
           string zStr = z_node->value();
           
           (*first)[i] = GridPoint(strToLong(xStr), strToLong(yStr), strToLong(zStr));
-          std::cout << "Point Def";
           ++i;
         }
         xml_node<> * velocity_node = particles_node->first_node("VELOCITY");

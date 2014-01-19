@@ -10,7 +10,9 @@ public:
 
   Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount,
       std::string outputDir, double lennardJonesA = 0.0, double lennardJonesB = 0.0);
+
   ParticlesState* SimulationStep();
+  void writeEnergiesToFile();
   void runSimulation();
 
 	~Simulation();

@@ -57,7 +57,9 @@ ParticlesState::ParticlesState(ParticlesState *first, unsigned long constVelocit
 }
 ParticlesState::~ParticlesState()
 {
-  if(particlePositions != NULL)
+  // if(particlePositions != NULL)
+  
+  if(N > 0)
   {
     //delete[] particlePositions;
   }
@@ -180,7 +182,6 @@ GridPoint ParticlesState::getAcceleration(unsigned long particle, const double l
 void ParticlesState::writeToFile(std::string outputDir, unsigned long i)
 {
   std::stringstream filePathStream;
-  std::cout << "String out";
   filePathStream << outputDir << i << ".dat";
   std::fstream f;
   f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
