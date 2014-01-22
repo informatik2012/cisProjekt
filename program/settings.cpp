@@ -41,6 +41,47 @@ long Settings::strToLong( const std::string& s )
   return x;
 } 
 
+template <typename Type> // this is the template parameter declaration
+void Settings::addNTimes(std::vector<Type> *vector, Type value, unsigned long times)
+{
+  for(unsigned int i = 0; i < times; ++i)
+  {
+    vector->push_back(value);
+  }
+}
+
+void Settings::addParticles(std::vector<GridPoint> *particlePositions, std::vector<unsigned long> *masses, std::vector<unsigned long> *velocities, GridPoint *middle, GridPoint *lengthes, unsigned long mass, unsigned long velocity, unsigned long N)
+{
+  GridPoint bottomLeft = *middle - (*lengthes / 2) - GridPoint(1,1,1);
+  GridPoint topRight = *middle + (*lengthes / 2) + GridPoint(1,1,1);
+
+  assert(bottomLeft < topRight);
+
+  for(unsigned long i = 0; i < N; ++i)
+  {
+    bool alreadyInserted;
+    do
+    {
+      alreadyInserted = false;
+      GridPoint newPoint(bottomLeft, topRight);
+      for(unsigned long j = 0; j < i; ++j)
+      {
+        if((*particlePositions)[j] == newPoint)
+        {
+          alreadyInserted = true;
+          break;
+        }
+      }
+      if(!alreadyInserted)
+      {
+        particlePositions->push_back(newPoint);
+      }
+    } while(alreadyInserted);
+  }
+  addNTimes<unsigned long>(masses, mass, N);
+  addNTimes<unsigned long>(velocities, velocity, N);
+}
+
 Settings *Settings::getSettingsFromFile(std::string filePath)
 {
   Settings *settings = new Settings();
@@ -59,6 +100,11 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
   doc.parse<0>(&buffer[0]);
   // Find our root node
   root_node = doc.first_node("WORLD");
+
+
+  std::vector<GridPoint> particlePositions;
+  std::vector<unsigned long> masses;
+  std::vector<unsigned long> velocities;
 
   xml_node<> * simulation_node = root_node->first_node("SIMULATION");
   xml_node<> * steps_node = simulation_node->first_node("STEPS");
@@ -111,43 +157,21 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
 
       xml_node<> * particles_node = rectangle_node->first_node("PARTICLES");
       
-      GridPoint bottomLeft = middle - (lengthes / 2);
-
-      GridPoint topRight = middle + (lengthes / 2);
-
-      assert(bottomLeft < topRight);
-
       if(particles_node != NULL)
       {
         long count = strToLong(particles_node->first_node("COUNT")->value());
-        ParticlesState *first = new ParticlesState(count, bottomLeft, topRight); 
-        ParticlesState *second = NULL;
-        /*
-        GridPoint * particles = new GridPoint[count];
-        for(long i = 0; i < count; ++i)
-        {
-          bool alreadyInserted;
-          do
-          {
-            alreadyInserted = false;
-            particles[i] = GridPoint(bottomLeft, topRight);
-            for(long j; j < i; ++j)
-            {
-              if(particles[j] == particles[i])
-              {
-                alreadyInserted = true;
-                break;
-              }
-            }
-          } while(alreadyInserted);
-          
-          //cout << particles[i];
-        }
-        */
+        
         xml_node<> * velocity_node = particles_node->first_node("VELOCITY");
         long velocity = strToLong(velocity_node->value());
+        
+        xml_node<> * mass_node = particles_node->first_node("MASS");
+        long mass = strToLong(mass_node->value());
 
-        for (xml_attribute<> *attr = velocity_node->first_attribute();
+        addParticles(&particlePositions, &masses, &velocities, &middle, &lengthes, mass, velocity, count);
+        //ParticlesState *first = new ParticlesState(count, bottomLeft, topRight); 
+        //ParticlesState *second = NULL;
+                
+        /*for (xml_attribute<> *attr = velocity_node->first_attribute();
             attr; attr = attr->next_attribute())
         {
           if(strcmp(attr->name(),"TYPE") == 0)
@@ -169,7 +193,7 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
           {
             settings->simulation = new Simulation(first, second, steps, outputDir);
           }
-        }
+        }*/
         //delete first;
       }
       
@@ -185,13 +209,16 @@ Settings *Settings::getSettingsFromFile(std::string filePath)
           lengths_node->first_node("Z")->value());
 
     }
-    ParticlesState *first = NULL;
-    ParticlesState *second = NULL;
     for (xml_node<> * particles_node = object_node->first_node("PARTICLES"); particles_node != 0; particles_node = particles_node->next_sibling())
     {
-      unsigned long pointsCount = 0;
       for (xml_node<> * positions_node = particles_node->first_node("POSITIONS"); positions_node != 0; positions_node = positions_node->next_sibling(positions_node->name()))
       {
+        //first = new ParticlesState(pointsCount, 0);
+        xml_node<> * velocity_node = particles_node->first_node("VELOCITY");
+        long velocity = strToLong(velocity_node->value());
+       
+        xml_node<> * mass_node = particles_node->first_node("MASS");
+        long mass = strToLong(mass_node->value());
 
         xml_node<> *x_node;
         xml_node<> *y_node;
@@ -205,31 +232,16 @@ z_node = positions_node->first_node("Z");
              z_node = z_node->next_sibling(z_node->name())
              )
         {
-          ++pointsCount;
-        }
-
-        first = new ParticlesState(pointsCount, 0);
-        unsigned long i = 0;
-        for (x_node = positions_node->first_node("X"),
-y_node = positions_node->first_node("Y"),
-z_node = positions_node->first_node("Z");
-             x_node != 0 && y_node != 0 && z_node != 0;
-             x_node = x_node->next_sibling(x_node->name()),
-             y_node = y_node->next_sibling(y_node->name()),
-             z_node = z_node->next_sibling(z_node->name())
-             )
-        {
           string xStr = x_node->value();
           string yStr = y_node->value();
           string zStr = z_node->value();
           
-          (*first)[i] = GridPoint(strToLong(xStr), strToLong(yStr), strToLong(zStr));
-          ++i;
+          particlePositions.push_back(GridPoint(strToLong(xStr), strToLong(yStr), strToLong(zStr)));
+          velocities.push_back(velocity);
+          masses.push_back(mass);
         }
-        xml_node<> * velocity_node = particles_node->first_node("VELOCITY");
-        long velocity = strToLong(velocity_node->value());
 
-        for (xml_attribute<> *attr = velocity_node->first_attribute();
+        /*for (xml_attribute<> *attr = velocity_node->first_attribute();
             attr; attr = attr->next_attribute())
         {
           if(strcmp(attr->name(),"TYPE") == 0)
@@ -240,21 +252,24 @@ z_node = positions_node->first_node("Z");
             }
             break;
           }
-        }
+        }*/
 
       }
 
     }
     //cout << endl;
+    assert(particlePositions.size() == masses.size() && velocities.size() == masses.size());
+    ParticlesState *first = new ParticlesState(&particlePositions);
+    ParticlesState *second = new ParticlesState(first, &velocities);
     if(second != NULL)
     {
       if(lennardJonesA >= 0.0 && lennardJonesB >= 0.0)
       {
-        settings->simulation = new Simulation(first, second, steps, outputDir, lennardJonesA, lennardJonesB);
+        settings->simulation = new Simulation(&masses, first, second, steps, outputDir, lennardJonesA, lennardJonesB);
       }
       else
       {
-        settings->simulation = new Simulation(first, second, steps, outputDir);
+        settings->simulation = new Simulation(&masses, first, second, steps, outputDir);
       }
     }
   }

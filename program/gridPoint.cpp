@@ -99,6 +99,17 @@ long GridPoint::distanceTo(const GridPoint point)
 
   return (result > (double) UPPERBOUND?UPPERBOUND:(long) result);
 }
+
+double GridPoint::getLengthSquare()
+{
+  double result = 0.0;
+  for(unsigned int i = 0; i < 3; ++i)
+  {
+    result += ((double) positions[i]) * positions[i];
+  }
+  return result;
+}
+
 void GridPoint::addToComponent(const unsigned long compIndex, const long summand)
 {
   if(UPPERBOUND >= summand && summand >= 0)

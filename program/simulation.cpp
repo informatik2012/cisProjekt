@@ -7,11 +7,13 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fstream>
+#include <sstream>
 #include "gridPoint.hpp"
 #include "particlesState.hpp"
 #include "settings.hpp"
 
-Simulation::Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount, std::string outputDir, double lennardJonesA, double lennardJonesB):stepCount(stepCount), outputDir(outputDir), lennardJonesA(lennardJonesA), lennardJonesB(lennardJonesB)
+Simulation::Simulation(std::vector<unsigned long> *masses, ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount, std::string outputDir, double lennardJonesA, double lennardJonesB):masses(*masses), stepCount(stepCount), outputDir(outputDir), lennardJonesA(lennardJonesA), lennardJonesB(lennardJonesB)
 {
   if(access(outputDir.c_str(), 0) != 0)
   {
@@ -63,8 +65,38 @@ ParticlesState* Simulation::SimulationStep()
 
 void Simulation::writeEnergiesToFile()
 {
+  std::stringstream filePathStream;
+  filePathStream << outputDir << "energies.dat";
+  std::fstream f;
+  f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+  f << "#i\tkin\tpot\ttotal" << std::endl;
   
+  for(unsigned long i = 1; i <= stepCount; ++i)
+  {
+    f << i << "\t" << particlesStates[i].getTotalKinEnergy(&masses, &(particlesStates[i-1]));
+    f << std::endl; 
+  }
+  f.close();
+
 }
+
+void Simulation::writeMiddleDistancesToFile()
+{
+  std::stringstream filePathStream;
+  filePathStream << outputDir << "distances.dat";
+  std::fstream f;
+  f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+  f << "#i\tdistances" << std::endl;
+  
+  for(unsigned long i = 0; i <= stepCount; ++i)
+  {
+    f << i << "\t" << particlesStates[i].getMiddleDistance();
+    f << std::endl; 
+  }
+  f.close();
+
+}
+
 
 void Simulation::runSimulation()
 {
@@ -73,6 +105,7 @@ void Simulation::runSimulation()
     SimulationStep();
   }
   writeEnergiesToFile();
+  writeMiddleDistancesToFile();
 }
 
 

@@ -10,7 +10,8 @@ class ParticlesState
   public:
     ParticlesState(unsigned long N,unsigned long iteration = 0);
     ParticlesState(unsigned long N, GridPoint bottomLeft, GridPoint topRight, unsigned long iteration = 0);
-    ParticlesState(ParticlesState *first, unsigned long constVelocity);
+    ParticlesState(std::vector<GridPoint> *particlePositions, unsigned long iteration = 0);
+    ParticlesState(ParticlesState *first, std::vector<unsigned long> *velocities);
     ~ParticlesState();
     unsigned long nextIt();
 
@@ -18,7 +19,13 @@ class ParticlesState
  
     GridPoint getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB);
     GridPoint getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB);
+
+
+    double getMiddleDistance();
     void writeToFile(std::string file, unsigned long i);
+
+
+    double getTotalKinEnergy(std::vector<unsigned long> *masses, ParticlesState *previousParticlesState);
 
     GridPoint & operator [](unsigned long i);
     unsigned long N;

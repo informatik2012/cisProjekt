@@ -1,6 +1,7 @@
 #include "particlesState.hpp"
 #include <fstream>
 #include <sstream>
+#include <assert.h>
 GridPoint ONEPOINT(1,1,1);
 
 //const double ParticlesState::lennardJonesA = 12.0;
@@ -11,6 +12,16 @@ ParticlesState::ParticlesState(unsigned long N, unsigned long iteration):N(N),it
 {
   particlePositions = new GridPoint[N];
 }
+ParticlesState::ParticlesState(std::vector<GridPoint> *particlePositions, unsigned long iteration):N(particlePositions->size()),iteration(iteration)
+{
+  this->particlePositions = new GridPoint[particlePositions->size()];
+  for(unsigned long i = 0; i < particlePositions->size(); ++i)
+  {
+    this->particlePositions[i] = (*particlePositions)[i];
+  }
+}
+
+
 ParticlesState::ParticlesState(unsigned long N, GridPoint bottomLeft, GridPoint topRight, unsigned long iteration):N(N),iteration(iteration)
 {
   particlePositions = new GridPoint[N];
@@ -33,9 +44,10 @@ ParticlesState::ParticlesState(unsigned long N, GridPoint bottomLeft, GridPoint 
     } while(alreadyInserted);
   }
 }
-ParticlesState::ParticlesState(ParticlesState *first, unsigned long constVelocity)
+ParticlesState::ParticlesState(ParticlesState *first, std::vector<unsigned long> *velocities)
   :N(first->N),iteration(first->nextIt())
 {
+  assert(first->N == velocities->size());
   particlePositions = new GridPoint[N];
   for(long i = 0; i < N; ++i)
   {
@@ -43,7 +55,7 @@ ParticlesState::ParticlesState(ParticlesState *first, unsigned long constVelocit
     do
     {
       alreadyInserted = false;
-      particlePositions[i] = GridPoint(particlePositions[i], constVelocity);
+      particlePositions[i] = GridPoint((*first)[i], (*velocities)[i]);
       for(long j; j < i; ++j)
       {
         if(particlePositions[j] == particlePositions[i])
@@ -161,7 +173,7 @@ GridPoint ParticlesState::getForceOfParticles(unsigned long i, unsigned long j, 
   GridPoint force = GridPoint();
   for(int k = 0; k < 3; ++k)
   {
-    force[k] = (long) (coeff * distVector[i]);
+    force[k] = (long) (coeff * distVector[k]);
   }
   return force;
 }
@@ -177,6 +189,28 @@ GridPoint ParticlesState::getAcceleration(unsigned long particle, const double l
     }
   }
   return GridPoint(0,0,0);
+}
+
+double ParticlesState::getTotalKinEnergy(std::vector<unsigned long> *masses, ParticlesState *previousPState)
+{
+  double totalKinEnergy = 0.0;
+  for(unsigned long i = 0; i < N; ++i)
+  {
+    totalKinEnergy +=  0.5 * (*masses)[i] * (particlePositions[i]-(*previousPState)[i]).getLengthSquare(); //<< "\t";
+  }
+  return totalKinEnergy;
+}
+
+double ParticlesState::getMiddleDistance()
+{
+  double distance;
+  for(unsigned long i = 0; i < N; ++i)
+  {
+    for(unsigned long j = i+1; j < N; ++j)
+    {
+      distance += (double) particlePositions[i].distanceTo(particlePositions[j]);
+    }
+  }
 }
 
 void ParticlesState::writeToFile(std::string outputDir, unsigned long i)

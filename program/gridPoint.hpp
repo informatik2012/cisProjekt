@@ -19,6 +19,7 @@ class GridPoint
 
     void addToComponent(const unsigned long compIndex, const long summand);
     long distanceTo(const GridPoint point);
+    double getLengthSquare();
 
     static GridPoint ONEPOINT;
     static const long LOWERBOUND;

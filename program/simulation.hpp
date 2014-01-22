@@ -6,13 +6,14 @@
 class Simulation
 {
 public:
-  Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount);
+  //Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount);
 
-  Simulation(ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount,
+  Simulation(std::vector<unsigned long> *masses, ParticlesState *firstState, ParticlesState *secondState, unsigned long stepCount,
       std::string outputDir, double lennardJonesA = 0.0, double lennardJonesB = 0.0);
 
   ParticlesState* SimulationStep();
   void writeEnergiesToFile();
+  void writeMiddleDistancesToFile();
   void runSimulation();
 
 	~Simulation();
@@ -20,6 +21,7 @@ public:
 
 
 private:
+  std::vector<unsigned long> masses;
   ParticlesState *particlesStates;
   unsigned long currentState;
   unsigned long stepCount;
