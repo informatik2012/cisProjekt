@@ -19,7 +19,7 @@ class GridPoint
     long & operator [](int i);
 
     void addToComponent(const unsigned long compIndex, const long summand);
-    unsigned long distanceTo(const GridPoint point);
+    double distanceTo(const GridPoint point);
     double getLengthSquare();
 
     static GridPoint ONEPOINT;

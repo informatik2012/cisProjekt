@@ -1,4 +1,3 @@
-
 #include "simulation.hpp"
 #include <limits.h>
 #include <math.h>
@@ -10,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include "gridPoint.hpp"
+#include "gridPointDouble.hpp"
 #include "particlesState.hpp"
 #include "settings.hpp"
 
@@ -38,7 +38,22 @@ ParticlesState* Simulation::SimulationStep()
   const unsigned long cP1 = currentState + 1;
   for(unsigned long i = 0; i < N; ++i)
   {
-    particlesStates[cP1][i] = particlesStates[c][i] + particlesStates[c][i] - particlesStates[cM1][i] + particlesStates[c].getAcceleration(i, lennardJonesA, lennardJonesB);
+    GridPointDouble acceleration = particlesStates[c].getAcceleration(i, &masses, lennardJonesA, lennardJonesB);
+    GridPoint halfAcceleration;
+    for(int j = 0; j < 3; ++j)
+    {
+      long halfAccelerationJ = (long) (0.5 * acceleration[j]);
+      if(GridPoint::LOWERBOUND <= halfAccelerationJ && halfAccelerationJ <= GridPoint::UPPERBOUND)
+      {
+        halfAcceleration[j] = (long) (0.5 * acceleration[j]);
+      }
+      else
+      {
+        std::cout << "Acceleration too big" << std::endl;
+        exit(1);
+      }
+    }
+    particlesStates[cP1][i] = particlesStates[c][i] + particlesStates[c][i] - particlesStates[cM1][i] + halfAcceleration;
 
     //std::cout << particlesStates[c].getAcceleration(i, lennardJonesA, lennardJonesB);
     //std::cout << lennardJonesA;

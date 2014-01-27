@@ -19,7 +19,8 @@ class ParticlesState
     std::vector<GridPoint> getNeightbours(GridPoint origin, long radius);
  
     GridPointDouble getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB);
-    GridPointDouble getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB);
+
+    GridPointDouble getAcceleration(unsigned long particle, std::vector<unsigned long> *masses,const double lennardJonesA, const double lennardJonesB);
 
     double getPotential(unsigned long i, unsigned long j, const double lennardJonesA, const double   lennardJonesB);
 

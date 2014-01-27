@@ -76,7 +76,7 @@ long & GridPoint::operator [](int i)
   return positions[i];
 }
 
-unsigned long GridPoint::distanceTo(const GridPoint point)
+double GridPoint::distanceTo(const GridPoint point)
 {
   //unsigned long differences[3];
   double result = 0;
@@ -103,7 +103,7 @@ unsigned long GridPoint::distanceTo(const GridPoint point)
   {
     std::cout << result;
   }
-  return (unsigned long) result;
+  return result;
 }
 
 double GridPoint::getLengthSquare()

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<WORLD>
+  <SIMULATION>
+    <STEPS>100</STEPS>
+    <OUTPUTDIR>firstWorld/</OUTPUTDIR>
+    <LENNARDJONESA>12e15</LENNARDJONESA>
+    <LENNARDJONESB>12e9</LENNARDJONESB>
+  </SIMULATION>
+  <OBJECTS>
+    <RECTANGLE>
+      <TITLE>Quader 1</TITLE>
+      <LOCATION>
+        <MIDDLEPOINT>
+          <X>4</X>
+          <Y>4</Y>
+          <Z>4</Z>
+        </MIDDLEPOINT>
+        <LENGTHS>
+          <X>10000</X>
+          <Y>10000</Y>
+          <Z>10000</Z>
+        </LENGTHS>
+      </LOCATION>
+      <POTENTIAL>
+        <V>3</V>
+      </POTENTIAL>	
+
+      <PARTICLES>
+        <COUNT>1000</COUNT>
+        <MASS>50</MASS>
+        <VELOCITY TYPE="constant">20</VELOCITY>
+      </PARTICLES>
+
+    </RECTANGLE>
+  </OBJECTS>
+</WORLD>

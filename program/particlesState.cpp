@@ -163,7 +163,7 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
 
 GridPointDouble ParticlesState::getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB)
 {
-  const double distance = (double) particlePositions[i].distanceTo(particlePositions[j]);
+  const double distance = particlePositions[i].distanceTo(particlePositions[j]);
   if(distance <= 0.0)
   {
     std::cout << distance << std::endl;
@@ -189,7 +189,7 @@ GridPointDouble ParticlesState::getForceOfParticles(unsigned long i, unsigned lo
   return force;
 }
 
-GridPointDouble ParticlesState::getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB)
+GridPointDouble ParticlesState::getAcceleration(unsigned long particle, std::vector<unsigned long> *masses,const double lennardJonesA, const double lennardJonesB)
 {
   GridPointDouble acceleration = GridPointDouble();
   for(unsigned long i = 0; i < N; ++i)
@@ -198,6 +198,10 @@ GridPointDouble ParticlesState::getAcceleration(unsigned long particle, const do
     {
       acceleration = acceleration - getForceOfParticles(particle, i, lennardJonesA, lennardJonesB);
     }
+  }
+  for(int i = 0; i < 3; ++i)
+  {
+    acceleration[i] =  acceleration[i] / (*masses)[particle];
   }
   return acceleration;
 }
@@ -214,7 +218,7 @@ double ParticlesState::getTotalKinEnergy(std::vector<unsigned long> *masses, Par
 
 double ParticlesState::getPotential(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB)
 {
-  const double distance = (double) particlePositions[i].distanceTo(particlePositions[j]);
+  const double distance = particlePositions[i].distanceTo(particlePositions[j]);
   const double distance2 = distance * distance;
   const double distance4 = distance2 * distance2;
   const double distance6 = distance4 * distance2;
@@ -249,7 +253,7 @@ double ParticlesState::getMiddleDistance()
   {
     for(unsigned long j = i+1; j < N; ++j)
     {
-      distance += (double) particlePositions[i].distanceTo(particlePositions[j]);
+      distance += particlePositions[i].distanceTo(particlePositions[j]);
     }
   }
   return distance / ((N-1)*N*0.5);
