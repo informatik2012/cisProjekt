@@ -2,6 +2,7 @@
 #define GRIDPOINT_HPP
 
 #include <iostream>
+#include "gridPointDouble.hpp"
 
 class GridPoint
 {
@@ -18,7 +19,7 @@ class GridPoint
     long & operator [](int i);
 
     void addToComponent(const unsigned long compIndex, const long summand);
-    long distanceTo(const GridPoint point);
+    unsigned long distanceTo(const GridPoint point);
     double getLengthSquare();
 
     static GridPoint ONEPOINT;
@@ -27,7 +28,6 @@ class GridPoint
     static const unsigned long RANGE;
   private:
     long positions[3];
-
 };
 
 
@@ -45,6 +45,8 @@ GridPoint operator/(GridPoint const & a, long const & b);
 GridPoint operator*(long const & a, GridPoint const & b);
 
 GridPoint operator+(GridPoint const & a, GridPoint const & b);
+
+GridPoint operator+(GridPoint const & a, GridPointDouble const & b);
 GridPoint operator-(GridPoint const & a, GridPoint const & b);
 
 std::ostream& operator<<(std::ostream& os, const GridPoint& point);

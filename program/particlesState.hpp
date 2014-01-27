@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "gridPoint.hpp"
+#include "gridPointDouble.hpp"
 #include "particle.hpp"
 
 class ParticlesState
@@ -17,8 +18,12 @@ class ParticlesState
 
     std::vector<GridPoint> getNeightbours(GridPoint origin, long radius);
  
-    GridPoint getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB);
-    GridPoint getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB);
+    GridPointDouble getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB);
+    GridPointDouble getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB);
+
+    double getPotential(unsigned long i, unsigned long j, const double lennardJonesA, const double   lennardJonesB);
+
+    double getTotalPotEnergy(ParticlesState *previousParticlesState, const double lennardJonesA, const double lennardJonesB);
 
 
     double getMiddleDistance();

@@ -3,8 +3,8 @@
   <SIMULATION>
     <STEPS>100</STEPS>
     <OUTPUTDIR>firstWorld/</OUTPUTDIR>
-    <LENNARDJONESA>12.0</LENNARDJONESA>
-    <LENNARDJONESB>12.0</LENNARDJONESB>
+    <LENNARDJONESA>12e15</LENNARDJONESA>
+    <LENNARDJONESB>12e9</LENNARDJONESB>
   </SIMULATION>
   <OBJECTS>
     <RECTANGLE>
@@ -16,9 +16,9 @@
           <Z>4</Z>
         </MIDDLEPOINT>
         <LENGTHS>
-          <X>100</X>
-          <Y>100</Y>
-          <Z>100</Z>
+          <X>1000</X>
+          <Y>1000</Y>
+          <Z>1000</Z>
         </LENGTHS>
       </LOCATION>
       <POTENTIAL>
@@ -26,9 +26,9 @@
       </POTENTIAL>	
 
       <PARTICLES>
-        <COUNT>1000</COUNT>
-        <MASS>20</MASS>
-        <VELOCITY TYPE="constant">2000</VELOCITY>
+        <COUNT>100</COUNT>
+        <MASS>1</MASS>
+        <VELOCITY TYPE="constant">20</VELOCITY>
       </PARTICLES>
 
     </RECTANGLE>

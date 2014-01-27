@@ -39,6 +39,9 @@ ParticlesState* Simulation::SimulationStep()
   for(unsigned long i = 0; i < N; ++i)
   {
     particlesStates[cP1][i] = particlesStates[c][i] + particlesStates[c][i] - particlesStates[cM1][i] + particlesStates[c].getAcceleration(i, lennardJonesA, lennardJonesB);
+
+    //std::cout << particlesStates[c].getAcceleration(i, lennardJonesA, lennardJonesB);
+    //std::cout << lennardJonesA;
     //std::cout << particlesStates[cP1][i];
   }
 
@@ -70,11 +73,19 @@ void Simulation::writeEnergiesToFile()
   std::fstream f;
   f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
   f << "#i\tkin\tpot\ttotal" << std::endl;
-  
+  double totPotEnergy = 0.0;
   for(unsigned long i = 1; i <= stepCount; ++i)
   {
-    f << i << "\t" << particlesStates[i].getTotalKinEnergy(&masses, &(particlesStates[i-1]));
+    double totKinEnergy = particlesStates[i].getTotalKinEnergy(&masses, &(particlesStates[i-1]));
+    if(i > 1)
+    {
+      totPotEnergy += particlesStates[i].getTotalPotEnergy(&(particlesStates[i-1]), lennardJonesA, lennardJonesB);
+    }
+    f << i << "\t" << totKinEnergy;
+    f << "\t" << totPotEnergy;
+    f << "\t" << (totKinEnergy + totPotEnergy);
     f << std::endl; 
+
   }
   f.close();
 

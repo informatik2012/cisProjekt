@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <assert.h>
+#include <stdlib.h>
 GridPoint ONEPOINT(1,1,1);
 
 //const double ParticlesState::lennardJonesA = 12.0;
@@ -160,35 +161,45 @@ std::vector<GridPoint> ParticlesState::getNeightbours(GridPoint origin, long rad
   }
 }
 
-GridPoint ParticlesState::getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB)
+GridPointDouble ParticlesState::getForceOfParticles(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB)
 {
-  const long distance = particlePositions[i].distanceTo(particlePositions[j]);
-  const long distance2 = distance * distance;
-  const long distance4 = distance2 * distance2;
-  const long distance6 = distance4 * distance2;
-  const long distance8 = distance4 * distance2;
-  const long distance14 = distance6 * distance8;
+  const double distance = (double) particlePositions[i].distanceTo(particlePositions[j]);
+  if(distance <= 0.0)
+  {
+    std::cout << distance << std::endl;
+  }
+  assert(distance > 0.0);
+  const double distance2 = distance * distance;
+  const double distance4 = distance2 * distance2;
+  const double distance6 = distance4 * distance2;
+  const double distance8 = distance4 * distance4;
+  const double distance14 = distance6 * distance8;
   const double coeff = lennardJonesA/distance14 - lennardJonesB/distance8;
-  const GridPoint distVector = (particlePositions[j] - particlePositions[i]);
-  GridPoint force = GridPoint();
+  GridPoint distVector = (particlePositions[j] - particlePositions[i]);
+  //for(int k = 0; k < 3; ++k)
+  //{
+  //  distVector[k] = (double) (particlePositions[j][k] - particlePositions[i][k]);
+  //}
+
+  GridPointDouble force = GridPointDouble();
   for(int k = 0; k < 3; ++k)
   {
-    force[k] = (long) (coeff * distVector[k]);
+    force[k] = (coeff * distVector[k]);
   }
   return force;
 }
 
-GridPoint ParticlesState::getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB)
+GridPointDouble ParticlesState::getAcceleration(unsigned long particle, const double lennardJonesA, const double lennardJonesB)
 {
-  GridPoint acceleration = GridPoint();
+  GridPointDouble acceleration = GridPointDouble();
   for(unsigned long i = 0; i < N; ++i)
   {
     if(i != particle)
     {
-      acceleration = acceleration + getForceOfParticles(particle, i, lennardJonesA, lennardJonesB);
+      acceleration = acceleration - getForceOfParticles(particle, i, lennardJonesA, lennardJonesB);
     }
   }
-  return GridPoint(0,0,0);
+  return acceleration;
 }
 
 double ParticlesState::getTotalKinEnergy(std::vector<unsigned long> *masses, ParticlesState *previousPState)
@@ -201,9 +212,39 @@ double ParticlesState::getTotalKinEnergy(std::vector<unsigned long> *masses, Par
   return totalKinEnergy;
 }
 
+double ParticlesState::getPotential(unsigned long i, unsigned long j, const double lennardJonesA, const double lennardJonesB)
+{
+  const double distance = (double) particlePositions[i].distanceTo(particlePositions[j]);
+  const double distance2 = distance * distance;
+  const double distance4 = distance2 * distance2;
+  const double distance6 = distance4 * distance2;
+  const double distance12 = distance6 * distance6;
+  const double energy = lennardJonesA/distance12 - lennardJonesB/distance6;
+  return energy;
+}
+
+double ParticlesState::getTotalPotEnergy(ParticlesState *previousPState, const double lennardJonesA, const double lennardJonesB)
+{
+  double totalPotEnergy = 0.0;
+  for(unsigned long i = 0; i < N; ++i)
+  {
+    for(unsigned long j = i + 1; j < N; ++j)
+    {
+      totalPotEnergy += getPotential(i, j, lennardJonesA, lennardJonesB) - previousPState->getPotential(i, j, lennardJonesA, lennardJonesB); //<< "\t";
+      if(totalPotEnergy != totalPotEnergy)
+      {
+        std::cout << iteration << " " <<  i << " " << j << std::endl;
+        exit(1);
+      }
+    }
+  }
+  return 2.0 * totalPotEnergy;
+}
+
+
 double ParticlesState::getMiddleDistance()
 {
-  double distance;
+  double distance = 0.0;
   for(unsigned long i = 0; i < N; ++i)
   {
     for(unsigned long j = i+1; j < N; ++j)
@@ -211,6 +252,7 @@ double ParticlesState::getMiddleDistance()
       distance += (double) particlePositions[i].distanceTo(particlePositions[j]);
     }
   }
+  return distance / ((N-1)*N*0.5);
 }
 
 void ParticlesState::writeToFile(std::string outputDir, unsigned long i)

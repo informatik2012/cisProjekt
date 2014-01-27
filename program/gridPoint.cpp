@@ -76,7 +76,7 @@ long & GridPoint::operator [](int i)
   return positions[i];
 }
 
-long GridPoint::distanceTo(const GridPoint point)
+unsigned long GridPoint::distanceTo(const GridPoint point)
 {
   //unsigned long differences[3];
   double result = 0;
@@ -92,12 +92,18 @@ long GridPoint::distanceTo(const GridPoint point)
       difference =  GridPoint::RANGE - difference; 
     }
 
-    result += difference * difference;
+    result += (double) difference * (double) difference;
   }
 
-  result = round(sqrt((double) result));
-
-  return (result > (double) UPPERBOUND?UPPERBOUND:(long) result);
+  result = round(sqrt(result));
+  if(result <= 0.0) result = 1.0;
+  assert(result > 0.0);
+  assert(result <= (double) GridPoint::RANGE);
+  if((unsigned long) result <= 0.0)
+  {
+    std::cout << result;
+  }
+  return (unsigned long) result;
 }
 
 double GridPoint::getLengthSquare()
@@ -105,7 +111,7 @@ double GridPoint::getLengthSquare()
   double result = 0.0;
   for(unsigned int i = 0; i < 3; ++i)
   {
-    result += ((double) positions[i]) * positions[i];
+    result += ((double) positions[i]) * ((double) positions[i]);
   }
   return result;
 }
@@ -248,6 +254,15 @@ GridPoint operator+(GridPoint const & a, GridPoint const & b)
   return result;
 }
 
+GridPoint operator+(GridPoint const & a, GridPointDouble const & b)
+{
+  GridPoint result = a;
+  for(int i = 0; i < 3; ++i)
+  {
+    result.addToComponent(i, (long) b[i]);
+  }
+  return result;
+}
 
 GridPoint operator-(GridPoint const & a, GridPoint const & b)
 {
