@@ -6,6 +6,8 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{pgfplotstable}
+\usepackage{pgfplots}
+%\pgfplotsset{compat=1.5}
 \usepackage{filecontents} %%%%
 \usepackage{listings}
 \author{Marco Stumper und Alexander Walter} %tikz animated, pdfplot points (mit marks)
@@ -87,7 +89,7 @@
         \column{.55\textwidth}
                 \includegraphics[width=\textwidth]{img/LennardJonesPotential.png}
                 \begin{itemize}
-                \item ${V(r)=V_0 (r^{-12}-r^{-6)}}$ %TODO%DONE
+                \item ${V(r)=V_0 (r^{-12}-r^{-6})}$ %TODO%DONE
                 \end{itemize}
         \column{.45\textwidth}
         \pause
@@ -165,11 +167,24 @@
       \item Zufällig auf den Raumkoordinaten x,y,z verteilt
     \end{itemize}
   \end{block}
+  \pause
+  \begin{center}
+  \begin{tikzpicture}
+\begin{axis}[
+enlargelimits=false,
+]
+\addplot3+[only marks, scatter, point meta=\thisrow{v},
+mark size=2pt]
+table {dat/Potentialpos.dat};
+	 \legend{N Partikel}
+\end{axis}
+\end{tikzpicture}
+  \end{center}
 \end{frame}
 
 \subsection{Ein paar Plots}
 
-\begin{frame} %Beispiel, funktioniert nicht so wie ich dachte
+\begin{frame} 
 \frametitle{Festkörper}
   \vspace*{-0.3cm}
       \centering
@@ -200,6 +215,39 @@ quiver={u=1,v=2*x,w=2},
 \end{tikzpicture}
 \end{frame}
 
+\iffalse
+\begin{frame}
+\begin{tikzpicture}
+\begin{axis}
+\addplot table[red,
+       x=index,y=kin]
+       {\firstWorld\energies.dat};
+
+\addplot table {
+A B
+0 0
+1 1
+1 2
+2 2
+};
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+\fi
+
+\begin{frame}
+\begin{tikzpicture}
+\begin{loglogaxis}[
+title=Convergence Plot,
+xlabel={I},
+ylabel={kin},
+]
+\addplot table[red,
+       x=i,y=kin]
+       {\firstWorld\energies.dat};
+\end{loglogaxis}
+\end{tikzpicture}
+\end{frame}
 
 \section{Resultate}
 
