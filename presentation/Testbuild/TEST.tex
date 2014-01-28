@@ -129,14 +129,14 @@
   \begin{center}
    XML Code
   \end{center}
-\lstinputlisting[language=XML, firstline=10, lastline=22]{dat/FirstWorld.xml}
+\lstinputlisting[language=XML, firstline=10, lastline=22]{dat/firstWorld.xml}
 
 \lstset{frame=shadowbox, rulesepcolor=\color{blue}}
   \vspace*{-0.3cm}
   \begin{center}
    XML Code
   \end{center}
-\lstinputlisting[language=XML, firstline=23, lastline=30]{dat/FirstWorld.xml}
+\lstinputlisting[language=XML, firstline=23, lastline=30]{dat/firstWorld.xml}
 
 \begin{frame}
 \frametitle{Code Aufbau}
@@ -221,7 +221,7 @@ quiver={u=1,v=2*x,w=2},
 \begin{axis}
 \addplot table[red,
        x=index,y=kin]
-       {\firstWorld\energies.dat};
+       {firstWorld/energies.dat};
 
 \addplot table {
 A B
@@ -237,15 +237,14 @@ A B
 
 \begin{frame}
 \begin{tikzpicture}
-\begin{loglogaxis}[
-title=Convergence Plot,
+\begin{axis}[
+title={Convergence Plot},
 xlabel={I},
 ylabel={kin},
 ]
-\addplot table[red,
-       x=i,y=kin]
-       {\firstWorld\energies.dat};
-\end{loglogaxis}
+\addplot table[red,x=i,y=kin]{firstWorld/energies.dat};
+%\addplot table[red,x=COUNT,y=NPROCS]{dat/WEAK_SCALING_GS.dat};
+\end{axis}
 \end{tikzpicture}
 \end{frame}
 
