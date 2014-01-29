@@ -1,10 +1,13 @@
-\documentclass[landscape]{standalone}
+\documentclass[landscape, multi, crop, tikz]{standalone}
 \usepackage{tikz}
 \usepackage{intcalc}
 \usepackage{pgfplots}
+\usepackage{graphicx}
 \usetikzlibrary{backgrounds,through, intersections, decorations.text, decorations.pathreplacing, calc}
 \begin{document}
-\begin{tikzpicture}[rotate=0, background rectangle/.style={fill=black},show background rectangle, color=white,help lines/.style={color=lightgray,line width=0.2pt}]
+\begin{tikzpicture}[rotate=0, background rectangle/.style={fill=black},show background rectangle, color=white,help lines/.style={color=lightgray,line width=0.2pt}
+]
+\def\currentState{1}
 \def\framesPerSecond{25}
 \def\seconds{10}
 \def\currentFrame{27};
@@ -18,12 +21,24 @@
 \def\colourArcB{\ifnum \modCountOfNumber>0\colourB \else \colourA \fi}
 \def\angle{\intcalcDiv{\intcalcMul{360}{\circleArg}}{\framesPerSecond}}
 
-\begin{axis}[view/h=120,xlabel=$x$,ylabel=$y$, zlabel=$z$] 
-\addplot3[only marks, scatter,scatter src=x] table[x=x, y=y, z=z]{1.dat};
+\begin{axis}[view/h=120,title={Particle coordinates --- State $i=\currentState$} ,xlabel=$x$,ylabel=$y$, zlabel=$z$,
+xmin=-2500, ymin=-2500, zmin=-2500,
+xmax=2500, ymax=2500, zmax=2500,
+unit vector ratio*=1.5 1.5,
+width=\linewidth
+] 
+\addplot3[only marks, scatter,scatter src=x] table[x=x, y=y, z=z]{\currentState.dat};
 \end{axis}
 \end{tikzpicture}
+
+\iffalse
+\newpage
 \begin{tikzpicture}[rotate=0, background rectangle/.style={fill=black},show background rectangle, color=white,help lines/.style={color=lightgray,line width=0.2pt}]
-\begin{axis}[view/h=120,xlabel=$x$,ylabel=$y$, zlabel=$z$] 
+\begin{axis}[view/h=120,xlabel=$x$,ylabel=$y$, zlabel=$z$,
+xmin=-2500, ymin=-2500, zmin=-2500,
+xmax=2500, ymax=2500, zmax=2500
+] 
+
 \addplot3[only marks, scatter,scatter src=x] table[x=x, y=y, z=z]{100.dat};
 \iffalse
 \addplot3[only marks,nodes near coords=\coordindex]
@@ -33,6 +48,6 @@ table[row sep=\\] {
 };
 \fi
 \end{axis}
-
 \end{tikzpicture}
+\fi
 \end{document}

@@ -1,3 +1,4 @@
+%\def\currentFrame{27};
 \documentclass[landscape]{standalone}
 \usepackage{tikz}
 \usepackage{intcalc}
@@ -7,7 +8,7 @@
 \begin{tikzpicture} [background rectangle/.style={fill=black},show background rectangle]
 \def\framesPerSecond{25}
 \def\seconds{10}
-\def\currentFrame{27};
+
 \def\circleArg{\intcalcMod{\currentFrame}{\framesPerSecond}}
 \def\countOfNumber{\intcalcDiv{\intcalcSub{\currentFrame}{\circleArg}}{\framesPerSecond}}
 \def\numberToShow{\intcalcSub{\seconds}{\countOfNumber}}
@@ -18,11 +19,21 @@
 \def\colourArcB{\ifnum \modCountOfNumber>0\colourB \else \colourA \fi}
 \def\angle{\intcalcDiv{\intcalcMul{360}{\circleArg}}{\framesPerSecond}}
 
+
+
+
+\node[white, align=center] at (0,1.5) {\Large Molecular Dynamics};
+
+
+\node[white, align=center] at (0,-1.5) {\tiny by Alexander Walter \& Marco Stumper};
+
 \node[white, align=center] at (0,0) {\Huge \numberToShow};
 
 %\node[white, align=center] at (0,0) {\Huge \numberToShow~\countOfNumber~\angle~\modCountOfNumber};
 
 \draw [\colourB, thick,domain=0:360] plot ({sin(\x)}, {cos(\x)});
+
+\draw [\colourA, thick] (-2.4,0) (2.4,0);
 
 \ifnum \modCountOfNumber>0
 \ifnum \angle>0 \draw [\colourA, thick,domain=0:\angle] plot ({sin(\x)}, {cos(\x)});\fi
