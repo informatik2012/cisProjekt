@@ -265,7 +265,7 @@ void ParticlesState::writeToFile(std::string outputDir, unsigned long i)
   filePathStream << outputDir << i << ".dat";
   std::fstream f;
   f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
-  f << "#x\ty\tz" << std::endl;
+  f << "x\ty\tz" << std::endl;
   for(unsigned long i = 0; i < N; ++i)
   {
     f << particlePositions[i].getX() << "\t" << particlePositions[i].getY();
