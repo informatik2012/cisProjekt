@@ -1,0 +1,38 @@
+\documentclass[landscape]{standalone}
+\usepackage{tikz}
+\usepackage{intcalc}
+\usepackage{pgfplots}
+\usetikzlibrary{backgrounds,through, intersections, decorations.text, decorations.pathreplacing, calc}
+\begin{document}
+\begin{tikzpicture}[rotate=0, background rectangle/.style={fill=black},show background rectangle, color=white,help lines/.style={color=lightgray,line width=0.2pt}]
+\def\framesPerSecond{25}
+\def\seconds{10}
+\def\currentFrame{27};
+\def\circleArg{\intcalcMod{\currentFrame}{\framesPerSecond}}
+\def\countOfNumber{\intcalcDiv{\intcalcSub{\currentFrame}{\circleArg}}{\framesPerSecond}}
+\def\numberToShow{\intcalcSub{\seconds}{\countOfNumber}}
+\def\colourA{white}
+\def\colourB{black}
+\def\modCountOfNumber{\intcalcMod{\countOfNumber}{2}}
+\def\colourArcA{\ifnum \modCountOfNumber>0\colourA \else \colourB \fi}
+\def\colourArcB{\ifnum \modCountOfNumber>0\colourB \else \colourA \fi}
+\def\angle{\intcalcDiv{\intcalcMul{360}{\circleArg}}{\framesPerSecond}}
+
+\begin{axis}[view/h=120,xlabel=$x$,ylabel=$y$, zlabel=$z$] 
+\addplot3[only marks, scatter,scatter src=x] table[x=x, y=y, z=z]{1.dat};
+\end{axis}
+\end{tikzpicture}
+\begin{tikzpicture}[rotate=0, background rectangle/.style={fill=black},show background rectangle, color=white,help lines/.style={color=lightgray,line width=0.2pt}]
+\begin{axis}[view/h=120,xlabel=$x$,ylabel=$y$, zlabel=$z$] 
+\addplot3[only marks, scatter,scatter src=x] table[x=x, y=y, z=z]{100.dat};
+\iffalse
+\addplot3[only marks,nodes near coords=\coordindex]
+table[row sep=\\] {
+0 2 0\\ 2 2 0\\ 0 1 3\\ 0 0 3\\ 
+1 0 3\\ 2 0 2\\ 2 0 0\\ 1 1 2\\
+};
+\fi
+\end{axis}
+
+\end{tikzpicture}
+\end{document}
