@@ -16,7 +16,7 @@ using namespace std;
 int main( int argc, const char* argv[] )
 {
   bool doTests = true;
-  Random::init((unsigned)time(NULL));
+  Random::init((unsigned long)time(NULL) * getpid());
   GridPoint p1(0,0,0);
   GridPoint p2(1,2,3);
   GridPoint p3(p1,p2);

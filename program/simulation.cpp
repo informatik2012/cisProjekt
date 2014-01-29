@@ -54,7 +54,17 @@ ParticlesState* Simulation::SimulationStep()
       }
     }
     particlesStates[cP1][i] = particlesStates[c][i] + particlesStates[c][i] - particlesStates[cM1][i] + halfAcceleration;
-
+    for(int j = 0; j < 3; ++j)
+    {
+      if(particlesStates[cP1][i][j] > maxCoordinate[j])
+      {
+        maxCoordinate[j] = particlesStates[cP1][i][j];
+      }
+      else if(particlesStates[cP1][i][j] < minCoordinate[j])
+      {
+        minCoordinate[j] = particlesStates[cP1][i][j];
+      }
+    }
     //std::cout << particlesStates[c].getAcceleration(i, lennardJonesA, lennardJonesB);
     //std::cout << lennardJonesA;
     //std::cout << particlesStates[cP1][i];
@@ -87,7 +97,7 @@ void Simulation::writeEnergiesToFile()
   filePathStream << outputDir << "energies.dat";
   std::fstream f;
   f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
-  f << "#i\tkin\tpot\ttotal" << std::endl;
+  f << "i\tkin\tpot\ttotal" << std::endl;
   double totPotEnergy = 0.0;
   for(unsigned long i = 1; i <= stepCount; ++i)
   {
@@ -112,7 +122,7 @@ void Simulation::writeMiddleDistancesToFile()
   filePathStream << outputDir << "distances.dat";
   std::fstream f;
   f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
-  f << "#i\tdistances" << std::endl;
+  f << "i\tdistances" << std::endl;
   
   for(unsigned long i = 0; i <= stepCount; ++i)
   {
@@ -123,15 +133,54 @@ void Simulation::writeMiddleDistancesToFile()
 
 }
 
+void Simulation::writeMinAndMaxCoordinateToFile()
+{
+  std::stringstream filePathStream;
+  filePathStream << outputDir << "minandmax.dat";
+  std::fstream f;
+  f.open(filePathStream.str().c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+
+  long minTotal = minCoordinate[1];
+  long maxTotal = maxCoordinate[1];
+  if(minCoordinate[0] < minCoordinate[1])
+  {
+    minTotal = minCoordinate[0];
+  }
+  if(minCoordinate[2] < minTotal)
+  {
+      minTotal = minCoordinate[2];
+  }
+  if(maxCoordinate[0] > maxCoordinate[1])
+  {
+    maxTotal = maxCoordinate[0];
+  }
+  if(maxCoordinate[2] > maxTotal)
+  {
+    maxTotal = maxCoordinate[2];
+  }
+  f << "SIMU_MIN_TOT=" << minTotal << std::endl;
+  f << "SIMU_MIN_X=" << minCoordinate[0] << std::endl;
+  f << "SIMU_MIN_Y=" << minCoordinate[1] << std::endl;
+  f << "SIMU_MIN_Z=" << minCoordinate[2] << std::endl;
+  f << "SIMU_MAX_TOT=" << maxTotal << std::endl;
+  f << "SIMU_MAX_X=" << maxCoordinate[0] << std::endl;
+  f << "SIMU_MAX_Y=" << maxCoordinate[1] << std::endl;
+  f << "SIMU_MAX_Z=" << maxCoordinate[2] << std::endl;  
+
+  f.close();
+}
 
 void Simulation::runSimulation()
 {
+  maxCoordinate = GridPoint(0,0,0);
+  minCoordinate = GridPoint(0,0,0);
   for(unsigned long i = 0; i < stepCount; ++i)
   {
     SimulationStep();
   }
   writeEnergiesToFile();
   writeMiddleDistancesToFile();
+  writeMinAndMaxCoordinateToFile();
 }
 
 

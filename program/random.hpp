@@ -3,7 +3,7 @@
 
 namespace Random
 {
-    void init(unsigned int seed);
+    void init(unsigned long seed);
     long getLong(long min, long max);
     double getRandomPhi();
     double getRandomTheta();

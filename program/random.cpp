@@ -7,9 +7,9 @@
 
 namespace Random
 {
-  void init(unsigned int seed)
+  void init(unsigned long seed)
   {
-    srand(seed);
+    srand48(seed);
   }
   long getLong(long min, long max)
   {

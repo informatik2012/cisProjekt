@@ -14,6 +14,7 @@ public:
   ParticlesState* SimulationStep();
   void writeEnergiesToFile();
   void writeMiddleDistancesToFile();
+  void writeMinAndMaxCoordinateToFile();
   void runSimulation();
 
 	~Simulation();
@@ -28,5 +29,7 @@ private:
   std::string outputDir;
   double lennardJonesA;
   double lennardJonesB;
+  GridPoint maxCoordinate;
+  GridPoint minCoordinate;
 };
 #endif
