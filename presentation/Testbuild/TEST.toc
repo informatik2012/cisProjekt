@@ -4,8 +4,8 @@
 \beamer@subsectionintoc {1}{2}{Potential}{6}{0}{1}
 \beamer@sectionintoc {2}{Die Simulation}{11}{0}{2}
 \beamer@subsectionintoc {2}{1}{Code}{11}{0}{2}
-\beamer@subsectionintoc {2}{2}{Initialisierung}{15}{0}{2}
-\beamer@subsectionintoc {2}{3}{Ein paar Plots}{17}{0}{2}
-\beamer@sectionintoc {3}{Resultate}{20}{0}{3}
-\beamer@subsectionintoc {3}{1}{Aggregatzust\IeC {\"a}nde}{20}{0}{3}
-\beamer@subsectionintoc {3}{2}{Noch M\IeC {\"o}gliches}{20}{0}{3}
+\beamer@subsectionintoc {2}{2}{Initialisierung}{13}{0}{2}
+\beamer@subsectionintoc {2}{3}{Ein paar Plots}{16}{0}{2}
+\beamer@sectionintoc {3}{Resultate}{23}{0}{3}
+\beamer@subsectionintoc {3}{1}{Aggregatzust\IeC {\"a}nde}{23}{0}{3}
+\beamer@subsectionintoc {3}{2}{Noch M\IeC {\"o}gliches}{23}{0}{3}

@@ -7,7 +7,7 @@
 \usepackage{graphicx}
 \usepackage{pgfplotstable}
 \usepackage{pgfplots}
-%\pgfplotsset{compat=1.5}
+\pgfplotsset{compat=1.5}
 \usepackage{filecontents} %%%%
 \usepackage{listings}
 \author{Marco Stumper und Alexander Walter} %tikz animated, pdfplot points (mit marks)
@@ -88,9 +88,10 @@
   \begin{columns}
         \column{.55\textwidth}
                 \includegraphics[width=\textwidth]{img/LennardJonesPotential.png}
-                \begin{itemize}
-                \item ${V(r)=V_0 (r^{-12}-r^{-6})}$ %TODO%DONE
-                \end{itemize}
+                \center
+                \huge
+                 ${V(r)=V_0 (r^{-12}-r^{-6})}$ %TODO%DONE
+                
         \column{.45\textwidth}
         \pause
                 \begin{itemize}
@@ -129,32 +130,21 @@
   \begin{center}
    XML Code
   \end{center}
-\lstinputlisting[language=XML, firstline=10, lastline=22]{dat/FirstWorld.xml}
+\lstinputlisting[language=XML, firstline=10, lastline=22]{dat/firstWorld.xml}
 
 \lstset{frame=shadowbox, rulesepcolor=\color{blue}}
   \vspace*{-0.3cm}
   \begin{center}
    XML Code
   \end{center}
-\lstinputlisting[language=XML, firstline=23, lastline=30]{dat/FirstWorld.xml}
+\lstinputlisting[language=XML, firstline=23, lastline=35]{dat/firstWorld.xml}
 
-\begin{frame}
-\frametitle{Code Aufbau}
+\lstset{frame=shadowbox, rulesepcolor=\color{blue}}
   \vspace*{-0.3cm}
-  \begin{block}{Eingabe}
-  \begin{itemize}
-      \item 
-      \item 
-    \end{itemize}
-  \end{block}
-  \pause
-    \begin{block}{Ausgabe}
-  \begin{itemize}
-      \item 
-      \item 
-    \end{itemize}
-  \end{block}
-\end{frame}
+  \begin{center}
+   XML Code
+  \end{center}
+\lstinputlisting[language=XML, firstline=36]{dat/firstWorld.xml}
 
 \subsection{Initialisierung}
 
@@ -195,57 +185,116 @@ enlargelimits=false,
      ylabel={y},
      zlabel={z}
 ]
-\addplot3+[only marks, scatter, point meta=\thisrow{v},
+\addplot3+[only marks,% scatter, point meta=\thisrow{y},
 mark size=2pt]
-table {dat/Potentialpos.dat};
-	 \legend{N Partikel}
+table {firstWorld/0.dat};
+	 \legend{N Partikel - 1. Zustand}
 \end{axis}
 \end{tikzpicture}
 \end{frame}
 
-\begin{frame}
-\frametitle{Plots}
+\begin{frame} 
+\frametitle{Festkörper}
   \vspace*{-0.3cm}
+      \centering
 \begin{tikzpicture}
-	\begin{axis}
-		\addplot3[blue,
-quiver={u=1,v=2*x,w=2},
--stealth,samples=15] {x^2};
-	\end{axis}
-\end{tikzpicture}
-\end{frame}
-
-\iffalse
-\begin{frame}
-\begin{tikzpicture}
-\begin{axis}
-\addplot table[red,
-       x=index,y=kin]
-       {\firstWorld\energies.dat};
-
-\addplot table {
-A B
-0 0
-1 1
-1 2
-2 2
-};
+\begin{axis}[
+enlargelimits=false,
+	 xlabel={x},
+     ylabel={y},
+     zlabel={z}
+]
+\addplot3+[only marks,% scatter, point meta=\thisrow{y},
+mark size=2pt]
+table {firstWorld/24.dat};
+	 \legend{N Partikel - 25. Zustand}
 \end{axis}
 \end{tikzpicture}
 \end{frame}
-\fi
+
+\begin{frame} 
+\frametitle{Festkörper}
+  \vspace*{-0.3cm}
+      \centering
+\begin{tikzpicture}
+\begin{axis}[
+enlargelimits=false,
+	 xlabel={x},
+     ylabel={y},
+     zlabel={z}
+]
+\addplot3+[only marks,% scatter, point meta=\thisrow{y},
+mark size=2pt]
+table {firstWorld/49.dat};
+	 \legend{N Partikel - 50. Zustand}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame} 
+\frametitle{Festkörper}
+  \vspace*{-0.3cm}
+      \centering
+\begin{tikzpicture}
+\begin{axis}[
+enlargelimits=false,
+	 xlabel={x},
+     ylabel={y},
+     zlabel={z}
+]
+\addplot3+[only marks,% scatter, point meta=\thisrow{y},
+mark size=2pt]
+table {firstWorld/74.dat};
+	 \legend{N Partikel - 75. Zustand}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame} 
+\frametitle{Festkörper}
+  \vspace*{-0.3cm}
+      \centering
+\begin{tikzpicture}
+\begin{axis}[
+enlargelimits=false,
+	 xlabel={x},
+     ylabel={y},
+     zlabel={z}
+]
+\addplot3+[only marks,% scatter, point meta=\thisrow{y},
+mark size=2pt]
+table {firstWorld/99.dat};
+	 \legend{N Partikel - 100. Zustand}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
 
 \begin{frame}
 \begin{tikzpicture}
-\begin{loglogaxis}[
-title=Convergence Plot,
-xlabel={I},
-ylabel={kin},
+\begin{axis}[
+title={Convergence Plot},
+xlabel={i},
+ylabel={pot},
 ]
-\addplot table[red,
-       x=i,y=kin]
-       {\firstWorld\energies.dat};
-\end{loglogaxis}
+%\addplot table[red,x=i,y=kin]{firstWorld/energies.dat};
+\addplot table[blue,x=i,y=pot]{firstWorld/energies.dat};
+%\addplot table[green,x=i,y=total]{firstWorld/energies.dat};
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\begin{tikzpicture}
+\begin{axis}[
+title={Convergence Plot},
+xlabel={i},
+ylabel={kin},
+grid=major,
+]
+\addplot table[red,x=i,y=kin]{firstWorld/energies.dat};
+%\addplot table[blue,x=i,y=pot]{firstWorld/energies.dat};
+%\addplot table[green,x=i,y=total]{firstWorld/energies.dat};
+\end{axis}
 \end{tikzpicture}
 \end{frame}
 
@@ -272,6 +321,7 @@ ylabel={kin},
       \item unterschiedliche Startgeschwindigkeiten
       \item v binomial auf die Teilchen verteilen
       \item abkühlen des Systems über Zeit
+      \item Dichtverteilung bestimmen
     \end{itemize}
   \end{block}
 \end{frame}

@@ -1,0 +1,208 @@
+\documentclass[a4paper,12pt]{scrartcl}
+\usepackage[utf8x]{inputenc}
+\usepackage{ngerman}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage[headsepline,plainheadsepline]{scrpage2}
+\usepackage{lmodern}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\usepackage{pgfplotstable}
+
+\DeclareCaptionFormat{subfig}{\figurename~#1#2#3}
+\DeclareCaptionSubType*{figure}
+\captionsetup[subfigure]{format=subfig,labelsep=colon,labelformat=simple}
+
+\DeclareMathSymbol{.}{\mathord}{letters}{"3B}
+
+
+\begin{document}
+
+\section{Speedup of partdiff-par with MPI}
+\subsection{Weak Scaling}
+\begin{table}[htb]
+  \pgfkeys{/pgf/number format/.cd,fixed, fixed zerofill,precision=4,use comma}
+  \centering
+  \begin{subtable}[b]{.49\linewidth}
+    \centering
+    \pgfplotstabletypeset[
+  columns={CONFIGURATION,TIME},
+  columns/CONFIGURATION/.style={string type, column name = Config, column type = {r}},
+  columns/TIME/.style={column name = Time, column type = {r}}
+]{times/WEAK_SCALING_JA.dat}
+    \caption{Jacobi}
+    \label{weakTabJa}
+   \end{subtable}%
+   \begin{subtable}[b]{.49\linewidth}
+     \centering
+     \pgfplotstabletypeset[
+  columns={CONFIGURATION,TIME},
+  columns/CONFIGURATION/.style={string type, column name = Config, column type = {r}},
+  columns/TIME/.style={column name = Time, column type = {r}}
+]{times/WEAK_SCALING_GS.dat}
+     \subcaption{Gauss-Seidel}
+     \label{weakTabGS}
+  \end{subtable}
+  \caption{Vergleich des Weak Scalings vom Jacobi- und dem Gauss-Seidel-Algorithmus}
+  \label{weakTab}
+\end{table}
+
+\begin{figure}[htb]
+  \centering
+    \begin{tikzpicture}
+      \begin{axis}[legend style={at={(0.95,0.5)},anchor=east},
+          width=\linewidth,
+          height=0.5\linewidth,
+          xtick=data,
+          xticklabels from table={times/WEAK_SCALING_JA.dat}{CONFIGURATION},
+          xlabel={Konfiguration (NPROCS-NNODES-ILINES)},
+          ylabel={Zeit (in Sekunden)}
+        ]
+        \addplot table[
+        x expr=\lineno,y=TIME, meta=CONFIGURATION]
+        {times/WEAK_SCALING_JA.dat};
+
+        \addplot table[
+        x expr=\lineno,y=TIME, meta=CONFIGURATION]
+        {times/WEAK_SCALING_GS.dat};
+
+        \legend{Weak Scaling of Jacobi, Weak Scaling of Gauss-Seidel}
+      \end{axis}
+    \end{tikzpicture}
+  \caption{Vergleich des Weak Scalings vom Jacobi- und dem Gauss-Seidel-Algorithmus (mit $f(x,y) = 2 \pi^2 \cdot sin(\pi x) \cdot sin(\pi y)$, 1500 Iterationen)}
+  \label{weakPlot}
+\end{figure}
+
+Die Wahl der Interlines in Bezug auf die Prozessorzahl erfolgt so, dass die Anzahl der zu berechnenden Matrixelemente pro Prozessor konstant bleiben. Da mit Erhöhung der Interlines die Anzahl der zu berechnenden Matrixelemente quadratisch steigt, ist diese Abhängigkeit nicht linear, d.h. bei Vervierfachung der Prozessorzahl wird die Anzahl der Interlines nur verdoppelt.\\
+Man erkennt an den Plots, dass sowohl für Jacobi als auch Gauss-Seidel das Programm gut skaliert,
+da die Laufzeiten sich mit steigender Prozessorzahl kaum verlängern.
+\pagebreak
+\subsection{Strong Scaling}
+\begin{table}[htb]
+  \pgfkeys{/pgf/number format/.cd,fixed, fixed zerofill,precision=4,use comma}
+  \centering
+  \begin{subtable}[b]{.49\linewidth}
+    \centering
+    \pgfplotstabletypeset[
+  columns={CONFIGURATION,TIME,SPEEDUP},
+  columns/CONFIGURATION/.style={string type, column name = Config, column type = {r}},
+  columns/TIME/.style={column name = Time, column type = {r}},
+  columns/SPEEDUP/.style={column name = Speedup, column type = {r}}
+]{times/STRONG_SCALING_JA_960.dat}
+    \caption{Jacobi}
+    \label{strongTabJa}
+   \end{subtable}%
+   \begin{subtable}[b]{.49\linewidth}
+     \centering
+     \pgfplotstabletypeset[
+  columns={CONFIGURATION,TIME,SPEEDUP},
+  columns/CONFIGURATION/.style={string type, column name = Config, column type = {r}},
+  columns/TIME/.style={column name = Time, column type = {r}},
+  columns/SPEEDUP/.style={column name = Speedup, column type = {r}}
+]{times/STRONG_SCALING_GS_960.dat}
+     \subcaption{Gauss-Seidel}
+     \label{strongTabGS}
+  \end{subtable}
+  \caption{Vergleich des Strong Scalings vom Jacobi- und dem Gauss-Seidel-Algorithmus}
+  \label{strongTab}
+\end{table}
+
+\begin{figure}[htb]
+  \centering
+    \begin{tikzpicture}
+      \begin{axis}[legend style={at={(0.95,0.5)},anchor=east},
+          width=\linewidth,
+          height=0.6\linewidth,
+          xtick=data,
+          xticklabels from table={times/STRONG_SCALING_JA_960.dat}{CONFIGURATION},
+          xlabel={Konfiguration (NPROCS-NNODES-ILINES)},
+          ylabel={Zeit (in Sekunden)}
+        ]
+        \addplot table[
+        x expr=\lineno,y=TIME, meta=CONFIGURATION]
+        {times/STRONG_SCALING_JA_960.dat};
+
+        \addplot table[
+        x expr=\lineno,y=TIME, meta=CONFIGURATION]
+        {times/STRONG_SCALING_GS_960.dat};
+
+        \legend{Strong Scaling of Jacobi, Strong Scaling of Gauss-Seidel}
+      \end{axis}
+    \end{tikzpicture}
+  \caption{Vergleich des Strong Scalings vom Jacobi- und dem Gauss-Seidel-Algorithmus (mit $f(x,y) = 2 \pi^2 \cdot sin(\pi x) \cdot sin(\pi y)$, 1000 Iterationen)}
+  \label{strongPlot}
+\end{figure}
+
+Bei beiden Algorithmen fällt mit steigender Prozesszahl die relative Steigerung des Speedups immer geringer aus.Dies wird wahrscheinlich durch den erhöhten Kommunikationsaufwand bedingt.\\
+Der Speedup ist beim Jacobi-Algorithmus generell höher als beim Gauss-Seidel-Algorithmus.
+Dies könnte daran liegen, dass beim Gauss-Seidel-Algorithmus die Sinuswerte nur einmal gecacht werden und beim Jacobi-Algorithmus dies immer wieder neu geschieht.
+
+\pagebreak
+\subsection{Kommunikation und Teilnutzung der Knoten}
+\begin{table}[htb]
+  \pgfkeys{/pgf/number format/.cd,fixed, fixed zerofill,precision=4,use comma}
+  \centering
+  \begin{subtable}[b]{.49\linewidth}
+    \centering
+    \pgfplotstabletypeset[
+  columns={CONFIGURATION,TIME},
+  columns/CONFIGURATION/.style={string type, column name = Config, column type = {r}},
+  columns/TIME/.style={column name = Time, column type = {r}}
+]{times/COMMUNICATION_A_JA.dat}
+    \caption{Jacobi}
+    \label{weakTabJa}
+   \end{subtable}%
+   \begin{subtable}[b]{.49\linewidth}
+     \centering
+     \pgfplotstabletypeset[
+  columns={CONFIGURATION,TIME},
+  columns/CONFIGURATION/.style={string type, column name = Config, column type = {r}},
+  columns/TIME/.style={column name = Time, column type = {r}}
+]{times/COMMUNICATION_A_GS.dat}
+     \subcaption{Gauss-Seidel}
+     \label{weakTabGS}
+  \end{subtable}
+  \caption{Vergleich der Kommunikation und Teilnutzung der Knoten vom Jacobi- und dem Gauss-Seidel-Algorithmus}
+  \label{weakTab}
+\end{table}
+
+\begin{figure}[htb]
+  \centering
+    \begin{tikzpicture}
+      \begin{axis}[legend style={at={(0.95,0.5)},anchor=east},
+          width=\linewidth,
+          height=0.5\linewidth,
+          xtick=data,
+          xticklabels from table={times/COMMUNICATION_A_JA.dat}{CONFIGURATION},
+          xlabel={Konfiguration (NPROCS-NNODES-ILINES)},
+          ylabel={Zeit (in Sekunden)}
+        ]
+        \addplot table[
+        x expr=\lineno,y=TIME, meta=CONFIGURATION]
+        {times/COMMUNICATION_A_JA.dat};
+
+        \addplot table[
+        x expr=\lineno,y=TIME, meta=CONFIGURATION]
+        {times/COMMUNICATION_A_GS.dat};
+
+        \legend{Communication of Jacobi, Communication of Gauss-Seidel}
+      \end{axis}
+    \end{tikzpicture}
+  \caption{Vergleich der Kommunikation und Teilnutzung der Knoten vom Jacobi- und dem Gauss-Seidel-Algorithmus\\
+  (mit $f(x,y) = 0$, Genauigkeit: $3.3504 \cdot 10^{-5}$)}
+  \label{weakPlot}
+\end{figure}
+
+Beim Gauss-Seidel-Algorithmus fällt eindeutig auf, dass dieser schneller ist,
+wenn er nur auf einem Knoten mit mehreren Prozessen läuft.
+Beim Jacobi-Algorithmus hingegen spielt die Netzwerklatenz zwischen den verschiedenen Knoten
+nicht so eine große Rolle. Dieser wird sogar schneller, wenn die zehn Prozesse statt auf einem Knoten auf zwei Knoten laufen. Wahrscheinlich wird dies dadurch bedingt, dass durch die Halbierung des Matrixberchnungsaufwandes bei Verteilung der zehn Prozesse auf zwei Knoten die Berechnung so viel schneller abläuft, dass die Netzwerklatenz nicht mehr so stark ins Gewicht fehlt.
+Generell ist die Laufzeit für die mehrknotigen Konfigurationen leicht schwankend.
+
+\end{document}
