@@ -34,7 +34,7 @@ done
 for currentFrame in {0..2800}
 do
   convert -density 600 -resize 1024x768 -colorspace YUV frame${currentFrame}.pdf ${currentFrame}.jpg &
-  if[ "$(currentFrame % 100)" -eq "0"]
+  if [ "$(currentFrame % 100)" -eq "0"]; then
     for job in `jobs -p`
     do
       echo $job
@@ -54,4 +54,4 @@ cd ..
 
 avconv -r 25 -b 10000k -i ${DIRECTORY}%d.jpg test.mp4
 #avconv -r 25 -b 10000k -i ${DIRECTORY}%d.jpg -pass 1 -y test.mp4 && avconv -r 25 -b 10000k -i ${DIRECTORY}%d.jpg -pass 2 -y test.mp4
-rm ${DIRECTORY}/*.*
+#rm ${DIRECTORY}*.*
