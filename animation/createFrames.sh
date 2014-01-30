@@ -34,8 +34,20 @@ done
 for currentFrame in {0..2800}
 do
   convert -density 600 -resize 1024x768 -colorspace YUV frame${currentFrame}.pdf ${currentFrame}.jpg &
+  if[ "$(currentFrame % 100)" -eq "0"]
+    for job in `jobs -p`
+    do
+      echo $job
+      wait $job || let "FAIL+=1"
+    done
+ fi
 done
 
+for job in `jobs -p`
+do
+  echo $job
+  wait $job || let "FAIL+=1"
+done
 
 
 cd ..
